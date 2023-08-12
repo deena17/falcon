@@ -7,6 +7,12 @@ use App\Models\InstallationEmbroideryModel;
 
 class InstallationEmbroidery extends ResourceController{
 
+    public $data = [];
+
+    protected $viewsFolder = '\App\Views\installation\embroidery';
+
+    protected $helpers = ['url', 'form'];
+
     public function index()
     {
         $model = new InstallationEmbroideryModel();
@@ -39,6 +45,11 @@ class InstallationEmbroidery extends ResourceController{
     public function create()
     {
         $model = new InstallationEmbroideryModel();
+
+        $this->data['pageTitle'] = 'Add Embroidery';
+
+        return view($this->viewsFolder .'/'.'add', $this->data);
+
         $data = [
             'customer_id' => $this->request->getVar('customer'),
             'install_date' => $this->request->getVar('install_date'),

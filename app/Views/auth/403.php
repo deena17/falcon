@@ -2,14 +2,14 @@
 <?= $this->section('breadcrumb'); ?>
     <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="<?= base_url(); ?>">Home</a></li>
-	    <li class="breadcrumb-item active">Access Denined</li>
+	    <li class="breadcrumb-item active">Access Denied</li>
     </ol>
 <?= $this->endSection(); ?>
 
 <?= $this->section("content") ?>
     <section class="content">
         <div class="error-page">
-            <h1 class="headline text-danger"><strong> 403</strong></h1>
+            <h1 class="headline text-danger"><strong> 404</strong></h1>
             <div class="error-content">
                 <h3 class="text-danger"><i class="fas fa-exclamation-triangle text-danger"></i> <strong>Oops! Access Denied.</strong></h3>
                 <p> You don't have access to this resource. Please contact site adminstrator for further support.

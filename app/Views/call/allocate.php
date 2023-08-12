@@ -1,7 +1,7 @@
 <?= $this->extend("layout/admin") ?>
 
 <?= $this->section('breadcrumb'); ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb float-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Customer</li>
     <li class="breadcrumb-item">Call</li>
@@ -17,9 +17,9 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h5 class="card-title"><strong><?= $pageTitle; ?></strong></h5>
+                    <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
                     <div class="float-right">
-                        <a href="<?= url_to('customer.call.list', $customer->id) ?>" class="btn btn-info">
+                        <a href="<?= url_to('call.allocation') ?>" class="btn btn-info">
                             <i class="fa fa-arrow-left mr-1"></i>Back</a>
                     </div>
                 </div>
@@ -28,74 +28,76 @@
                         <div class="col-md-6">
                             <table class="table table-bordered table-striped">
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Department</td>
+                                    <td><?= $call->name; ?></td>
                                 </tr>
                                 <tr>
                                     <td>Call Date</td>
-                                    <td></td>
+                                    <td><?= $call->call_date; ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Customer Name</td>
+                                    <td><?= $call->customer_name; ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Contact Person</td>
+                                    <td><?= $call->contact_name; ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Contact Number</td>
+                                    <td><?= $call->contact_number; ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Nature of Complaint</td>
+                                    <td><?= $call->complaint_nature; ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Remarks</td>
+                                    <td><?= $call->remarks; ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>Call Date</td>
-                                    <td></td>
+                                    <td>Installation Date</td>
+                                    <td><?= $call->installation_date; ?></td>
                                 </tr>
                             </table>
                         </div>
                         <div class="col-md-6">
-                            <form action="">
+                            <form action="" method="post">
                                 <div class="form-group row">
                                     <label for="due_date" class="form-label col-sm-3">Due Date</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="due_date" name="due_date" />
+                                        <input 
+                                            type="text" 
+                                            class="form-control datepicker" 
+                                            id="due_date" 
+                                            name="due_date" 
+                                            value="<?= set_value('due_date'); ?>"
+                                        />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="due_date" class="form-label col-sm-3">Is Combined Call?</label><br>
                                     <div class="col-sm-9">
                                         <input type="radio" class="mx-2" name="is_combined" value="yes">Yes
-                                        <input type="radio" class="mx-2" name="is_combined" value="no">No
+                                        <input type="radio" class="mx-2" name="is_combined" value="no" checked>No
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="due_date" class="form-label col-sm-3">Engineer</label>
                                     <div class="col-sm-9">
-                                        <div class="select2-purple">
-                                            <select name="engineer" id="engineer" class="select2" data-dropdown-css-class="select2" multiple="" style="width:100%">
-                                                <option value="0">Select Engineer</option>
-                                                <option value="0">One</option>
-                                                <option value="0">Two</option>
-                                                <option value="0">Three</option>
+                                        <div class="select2-purple" id="engineer-multiple">
+                                            <select id="engineer" class="select2" multiple="multiple" name="engineer[]"
+                                                style="width: 100%;" data-dropdown-css-class="select2-purple" value="">
+                                                <?php foreach ($engineer as $e) : ?>
+                                                <option value="<?= $e->id ?>"><?= $e->username; ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="due_date">Remarks</label>
-                                    <textarea name="" id="remarks" cols="30" rows="3" class="form-control"></textarea>
+                                    <textarea name="remarks" id="remarks" cols="30" rows="3" class="form-control"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <input type="submit" class="btn btn-success" value="Submit">
@@ -113,15 +115,17 @@
 <?= $this->section('scripts'); ?>
     <script>
         $('document').ready(function(){
-            $('input[type=radio][name=is_combined]').change(function() {
-                if (this.value == 'yes') {
-                   $("#engineer").removeClass("form-control").addClass("select2").attr("multiple", "multiple").attr("data-dropdown-css-class", "select2-purple").css("width", "100%");
-                   $('.select2').select2()
-                }
-                else if (this.value == 'no') {
-                    $("#engineer").removeClass("select2").addClass("form-control").attr("multiple", false).attr("data-dropdown-css-class", "");
-                }
-            });
+            // $('#engineer-multiple').hide();
+            // $('input[type=radio][name=is_combined]').change(function() {
+            //     if (this.value == 'yes') {
+            //         $("#engineer-one").hide();
+            //         $("#engineer-multiple").show();
+            //     }
+            //     else if (this.value == 'no') {
+            //         $("#engineer-one").show();
+            //         $("#engineer-multiple").hide();
+            //     }
+            // });
         });
     </script>
 <?= $this->endSection(); ?>

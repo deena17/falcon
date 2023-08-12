@@ -1,11 +1,16 @@
 <?php
 
 namespace App\Controllers;
-
-use CodeIgniter\RESTful\ResourceController;
+use App\Controllers\BaseController;
 use App\Models\InstallationFlatKnittingModel;
 
-class InstallationFlatKnitting extends ResourceController{
+class InstallationFlatKnitting extends BaseController{
+
+    public $data = [];
+
+    protected $viewsFolder = '\App\Views\installation\flatknitting';
+
+    protected $helpers = ['url', 'form'];
 
     public function index()
     {
@@ -39,6 +44,10 @@ class InstallationFlatKnitting extends ResourceController{
     public function create()
     {
         $model = new InstallationFlatKnittingModel();
+        $this->data['pageTitle'] = 'Add Flat Knitting';
+
+        return view($this->viewsFolder .'/'.'add', $this->data);
+    
         $data = [
             'customer_id' => $this->request->getVar('customer'),
             'install_date' => $this->request->getVar('install_date'),

@@ -16,6 +16,7 @@ class ServiceCallModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'department_id',
+        'call_type_id',
         'call_number', 
         'call_date', 
         'call_time', 
@@ -30,7 +31,9 @@ class ServiceCallModel extends Model
         'complaint_nature', 
         'remarks', 
         'status_id', 
-        'is_combined_call'
+        'allocate_status',
+        'is_combined',
+        'display'
     ];
 
     // Dates
@@ -80,7 +83,33 @@ class ServiceCallModel extends Model
         return "CAL/$next_number/$year";
     }
 
-    public function customerCalls($customer){
+    public function customer_calls($customer){
         return $this->select('*')->where('customer_id', $customer)->get()->getResult();
+    }
+
+    public function get_calls($allocate_status=0){
+        return $result = $this->select('call_number, call_date, service_call.contact_number, customer.customer_name, complaint_nature, service_call.id')
+                ->join('customer', "service_call.customer_id=customer.id")
+                ->where('service_call.allocate_status', $allocate_status)
+                ->get()->getResult();
+    }
+
+    public function get_call_detail($call){
+        return $result = $this->select('
+                    call_number, 
+                    call_date, 
+                    service_call.contact_number, 
+                    service_call.contact_name, 
+                    customer.customer_name, 
+                    complaint_nature, 
+                    service_call.id, 
+                    mst_department.name,
+                    service_call.remarks,
+                    service_call.installation_date
+                ')
+                ->join('customer', "service_call.customer_id=customer.id")
+                ->join('mst_department', "service_call.department_id=mst_department.id")
+                ->where('service_call.id', $call)
+                ->get()->getRow();
     }
 }

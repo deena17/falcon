@@ -1,7 +1,7 @@
 <?= $this->extend("layout/customer") ?>
 
 <?= $this->section('breadcrumb'); ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb float-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Customer</li>
     <li class="breadcrumb-item">Call</li>
@@ -18,7 +18,7 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h5 class="card-title"><strong><?= $pageTitle; ?></strong></h5>
+                    <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
                     <div class="float-right">
                         <a href="<?= url_to('customer.call.list', $customer->id) ?>" class="btn btn-info">
                             <i class="fa fa-arrow-left mr-1"></i>Back</a>
@@ -29,7 +29,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="id_department">Department</label>
+                                    <label for="id_department" class="requiredField">Department</label>
                                     <select name="department" id="id_department" class="form-control">
                                         <option value="0">Select Department</option>
                                         <?php foreach ($department as $d) : ?>
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label for="call-type">Call Type</label>
+                                <label for="call-type" class="requiredField">Call Type</label>
                                 <select name="call_type" id="call-type" class="form-control">
                                     <option value="0">Select Type</option>
                                     <?php foreach ($callType as $t) : ?>
@@ -82,7 +82,7 @@
                                     <label for="id_call_time">Call Time</label>
                                     <input 
                                         type="text" 
-                                        class="form-control <?php if ($validation->getError('call_time')) : ?>is-invalid<?php endif ?>" 
+                                        class="timepicker form-control <?php if ($validation->getError('call_time')) : ?>is-invalid<?php endif ?>" 
                                         id="id_call_time" 
                                         name="call_time"
                                         value="<?= set_value('call_time'); ?>"
@@ -145,9 +145,7 @@
                                     <label for="id_product_model">Product Model</label>
                                     <select name="product_model" id="id_product_model" class="form-control">
                                         <option value="0">Select Model</option>
-                                        <?php foreach($product_models as $p): ?>
-                                            <option value="<?= $p->id; ?>"><?= $p->name; ?></option>
-                                        <?php endforeach; ?>   
+ 
                                     </select>
                                 </div>
                             </div>
@@ -167,9 +165,10 @@
                                 <div class="form-group">
                                     <label for="id_service_type">Service Type</label>
                                     <select name="service_type" id="id_service_type" class="form-control">
-                                        <option value="1">Warranty</option>
-                                        <option value="2">AMC</option>
-                                        <option value="3">Non-Warranty</option>
+                                        <option value="0">Select type</option>
+                                        <?php foreach($service_type as $t): ?>
+                                        <option value="<?= $t->id; ?>"><?= $t->type; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
@@ -187,17 +186,17 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="id_compliant_nature">Nature of Complaint</label>
+                                    <label for="id_complaint_nature">Nature of Complaint</label>
                                     <input 
                                         type="text" 
-                                        class="form-control <?php if ($validation->getError('compliant_nature')) : ?>is-invalid<?php endif ?>" 
-                                        id="id_compliant_nature" 
-                                        name="compliant_nature"
-                                        value="<?= set_value('compliant_nature'); ?>"
+                                        class="form-control <?php if ($validation->getError('complaint_nature')) : ?>is-invalid<?php endif ?>" 
+                                        id="id_complaint_nature" 
+                                        name="complaint_nature"
+                                        value="<?= set_value('complaint_nature'); ?>"
                                     />
-                                    <?php if ($validation->getError('compliant_nature')) : ?>
+                                    <?php if ($validation->getError('complaint_nature')) : ?>
                                     <div class=" invalid-feedback">
-                                        <?= $validation->getError('compliant_nature') ?>
+                                        <?= $validation->getError('complaint_nature') ?>
                                     </div>
                                     <?php endif; ?>
                                 </div>
@@ -252,6 +251,20 @@
                 }
                 else{
                     $('#id_expiry_date').prop('readonly', true);
+                }
+            });
+            
+            $("#product").change(function(){
+                var productId = $(this).val();
+                if(productId){
+                    $.get(`<?= site_url(); ?>/master/product/${productId}/models`, function(response, status){
+                        var options = '';
+                        data = JSON.parse(response);
+                        for(i=0; i<data.length; i++){
+                            options += `<option value="${data[i].id}">${data[i].name}</option>`
+                        }
+                        $("#id_product_model").html(options);
+                    }); 
                 }
             });
         });

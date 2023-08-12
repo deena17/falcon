@@ -15,7 +15,7 @@ class CustomerModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'customer_type_id',
+        'customer_type',
         'customer_name',
         'contact_number',
         'contact_landline',
@@ -27,10 +27,12 @@ class CustomerModel extends Model
         'contact_pincode',
         'contact_area',
         'contact_website',
-        'contact_latitude',
-        'contact_longitude',
+        'distance',
+        'latitude',
+        'longitude',
         'created_by',
-        'modified_by'
+        'modified_by',
+        'display'
     ];
 
     // Dates

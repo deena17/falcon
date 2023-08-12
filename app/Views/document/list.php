@@ -14,7 +14,7 @@
 <section class="content">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title"><strong>List Documents</strong></h5>
+            <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
             <div class="float-right">
                 <a href="<?= url_to('customer.document.add', $customer->id) ?>" class="btn btn-success"><i class="fa fa-plus"></i> New
                     Document</a>

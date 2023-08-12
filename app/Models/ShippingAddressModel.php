@@ -21,6 +21,7 @@ class ShippingAddressModel extends Model
         'district',
         'state',
         'pincode',
+        'display'
     ];
 
     // Dates

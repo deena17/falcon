@@ -108,13 +108,15 @@
                   <tr class="bg-info">
                     <td>Department</td>
                     <td>Completed</td>
-                    <td>In Process</td>
+                    <td>In&nbsp;Process</td>
                     <td>Pending</td>
+                    <td>Long&nbsp;Pending</td>
                   </tr>
                   <tr>
                     <td>Flat Knitting</td>
                     <td>100</td>
                     <td>50</td>
+                    <td>10</td>
                     <td>10</td>
                   </tr>
                   <tr>
@@ -122,11 +124,13 @@
                     <td>100</td>
                     <td>50</td>
                     <td>10</td>
+                    <td>10</td>
                   </tr>
                   <tr>
                     <td>Embroidery</td>
                     <td>100</td>
                     <td>50</td>
+                    <td>10</td>
                     <td>10</td>
                   </tr>
                   <tr>
@@ -134,17 +138,20 @@
                     <td>100</td>
                     <td>50</td>
                     <td>10</td>
+                    <td>10</td>
                   </tr>
                   <tr>
                     <td>Knitting Needle</td>
                     <td>100</td>
                     <td>50</td>
                     <td>10</td>
+                    <td>10</td>
                   </tr>
                   <tr>
                     <td>Flat Knitting</td>
                     <td>100</td>
                     <td>50</td>
+                    <td>10</td>
                     <td>10</td>
                   </tr>
                 </table>
@@ -156,8 +163,58 @@
               <div class="card-header">
                 <h5 class="card-title">Enquiry</h5>
               </div>
-              <div class="card-body">
-                
+              <div class="card-body p-1">
+              <table class="table table-bordered">
+                  <tr class="bg-info">
+                    <td>Department</td>
+                    <td>Completed</td>
+                    <td>In&nbsp;Process</td>
+                    <td>Quotation&nbsp;Requested</td>
+                    <td>Loosed</td>
+                  </tr>
+                  <tr>
+                    <td>Flat Knitting</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>10</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Circular Knitting</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>10</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Embroidery</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>10</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Printing</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>10</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Knitting Needle</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>10</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Flat Knitting</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>10</td>
+                    <td>10</td>
+                  </tr>
+                </table>
               </div>
           </div>
         </div>

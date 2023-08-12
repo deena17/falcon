@@ -14,7 +14,16 @@ class ContactModel extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'email', 'phone', 'designation', 'notes', 'customer_id'];
+    protected $allowedFields    = [
+        'name', 
+        'email', 
+        'phone', 
+        'designation', 
+        'notes', 
+        'customer_id',
+        'alternate_number',
+        'is_primary'
+    ];
 
     // Dates
     protected $useTimestamps = false;

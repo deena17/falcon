@@ -7,6 +7,12 @@ use App\Models\InstallationCircularKnittingModel;
 
 class InstallationCircularKnitting extends ResourceController{
 
+    public $data = [];
+
+    protected $viewsFolder = '\App\Views\installation\circularknitting';
+
+    protected $helpers = ['url', 'form'];
+
     public function index()
     {
         $model = new InstallationCircularKnittingModel();
@@ -34,6 +40,10 @@ class InstallationCircularKnitting extends ResourceController{
     public function create()
     {
         $model = new InstallationCircularKnittingModel();
+        $this->data['pageTitle'] = 'Add Circular Knitting';
+
+        return view($this->viewsFolder .'/'.'add', $this->data);
+
         $data = [
             'customer_id' => $this->request->getVar('customer'),
             'install_date' => $this->request->getVar('install_date'),

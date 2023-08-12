@@ -27,11 +27,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Department</th>
                             <th>Enquiry Number</th>
                             <th>Enquiry Date</th>
                             <?php if(!isset($customer)): ?>
                             <th>Customer Name</th>
                             <?php endif; ?>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -40,15 +42,17 @@
                         <?php foreach ($enquiry as $e) : ?>
                         <tr>
                             <td><?= $index; ?></td>
+                            <td><?= $e->department_name; ?></td>
                             <td><?= $e->enquiry_number; ?></td>
                             <td><?= $e->enquiry_date; ?></td>
                             <?php if(!isset($customer)): ?>
                             <td><?= $e->customer_name; ?></td>
                             <?php endif; ?>
+                            <td><?= $e->status; ?></td>
                             <td>
                                 <a href="<?= isset($customer) ? url_to('customer.enquiry.edit', $customer->id, $e->id) : url_to('enquiry.edit', $e->id); ?>" class="btn btn-sm btn-primary"><i
                                         class="fa fa-pencil-alt"></i> Edit</a>
-                                <a href="<?= isset($customer) ? url_to('customer.enquiry.edit', $customer->id, $e->id) : url_to('enquiry.edit', $e->id); ?>" class="btn btn-sm btn-info"><i
+                                <a href="<?= isset($customer) ? url_to('customer.enquiry.detail', $customer->id, $e->id) : url_to('enquiry.edit', $e->id); ?>" class="btn btn-sm btn-info"><i
                                         class="fa fa-pencil-alt"></i> View</a>
                                 <a href="<?= isset($customer) ? url_to('customer.enquiry.delete', $customer->id, $e->id) : url_to('enquiry.delete', $e->id); ?>" class="btn btn-sm btn-danger"><i
                                         class="fa fa-trash"></i> Delete</a>

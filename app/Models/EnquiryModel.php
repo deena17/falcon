@@ -22,18 +22,22 @@ class EnquiryModel extends Model
         'customer_name',
         'contact_number',
         'contact_landline',
-        'contact_street',
-        'contact_city',
-        'contact_district',
-        'contact_state',
-        'contact_pincode',
-        'contact_area',
+        'street',
+        'city',
+        'district',
+        'state',
+        'pincode',
+        'area',
         'distance',
         'from_time',
         'to_time',
         'marketing_reference',
-        'traveling_kms',
+        'travelling_kms',
         'forward_to',
+        'status',
+        'customer_type',
+        'remarks',
+        'display'
     ];
 
     // Dates
@@ -81,5 +85,24 @@ class EnquiryModel extends Model
             $next_number = '0'.$next_number;
         }
         return "ENQ/$next_number/$year";
+    }
+
+    public function enquiry_detail($customer=null){
+        if(empty($customer)){
+            $result = $this->select('enquiry.id, enquiry_number, enquiry_date, customer_name, d.name as department_name, s.status')
+                    ->join('mst_department as d', "enquiry.department_id=d.id")
+                    ->join('mst_status as s', "enquiry.status=s.id")
+                    ->where('enquiry.display', 'Y')
+                    ->get()->getResult();
+        }
+        else{
+            $result = $this->select('enquiry.id, enquiry_number, enquiry_date, customer_name, d.name as department_name, s.status')
+                    ->join('mst_department as d', "enquiry.department_id=d.id")
+                    ->join('mst_status as s', "enquiry.status=s.id")
+                    ->where('enquiry.display', 'Y')
+                    ->where("customer_id = $customer")
+                    ->get()->getResult();
+        }
+        return $result;
     }
 }

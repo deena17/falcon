@@ -44,7 +44,7 @@ New Customer
                             <div class="row form-group">
                                 <label for="customer-type" class="col-sm-3 col-form-label">Customer type</label>
                                 <div class="col-sm-9">
-                                    <select id="customer-type" class="form-control" name="customer_type" value="">
+                                    <select id="customer-type" class="form-control" name="customer_type">
                                         <option value="0">Select Customer Type</option>
                                         <?php foreach ($customer_type as $c) : ?>
                                         <option value="<?= $c->id; ?>"><?= $c->type; ?></option>
@@ -329,7 +329,7 @@ New Customer
                         <div class="card-header">
                             Shipping Address
                             <div class="float-right">
-                                <input type="checkbox" id="shipping-checkbox"> Same as Billing Address
+                                <input type="checkbox" id="shipping-checkbox"> Same as Customer Address
                             </div>
                         </div>
                         <div class="card-body">

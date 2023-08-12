@@ -1,10 +1,10 @@
 <?= $this->extend("layout/customer") ?>
 
 <?= $this->section('breadcrumb'); ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb float-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Customer</li>
-    <li class="breadcrumb-item">Contact</li>
+    <li class="breadcrumb-item">Call</li>
     <li class="breadcrumb-item active">List</li>
 </ol>
 <?= $this->endSection(); ?>
@@ -12,9 +12,9 @@
 <?= $this->section("main") ?>
 <div class="card card-outline card-primary">
     <div class="card-header">
-        <h5 class="card-title"><strong><?= $pageTitle; ?></strong></h5>
+        <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
         <div class="float-right">
-            <a href="<?= url_to('customer.call.add', $customer->id) ?>" class="btn btn-success"><i class="fa fa-plus"></i>
+            <a href="<?= isset($customer) ? url_to('customer.call.add', $customer->id) : url_to('call.add'); ?>" class="btn btn-success"><i class="fa fa-plus"></i>
                 New Call</a>
         </div>
     </div>

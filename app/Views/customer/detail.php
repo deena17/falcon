@@ -61,9 +61,9 @@
                                 <?= $b->district; ?> <br>
                                 <?= $b->state; ?> <br>
                                 <?= $b->pincode; ?> <br>
-                                <?= $b->iec_number; ?> <br>
-                                <?= $b->pan_number; ?> <br>
-                                <?= $b->gst_number; ?> <br>
+                                IEC Number: <?= $b->iec_number; ?> <br>
+                                PAN Number: <?= $b->pan_number; ?> <br>
+                                GST Number: <?= $b->gst_number; ?> <br>
                             </div>
                         </div>
                     <?php endforeach; ?>    

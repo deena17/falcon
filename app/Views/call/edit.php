@@ -1,11 +1,11 @@
 <?= $this->extend("layout/customer") ?>
 
 <?= $this->section('breadcrumb'); ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb float-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Customer</li>
     <li class="breadcrumb-item">Call</li>
-    <li class="breadcrumb-item active">New</li>
+    <li class="breadcrumb-item active">Edit</li>
 </ol>
 <?= $this->endSection(); ?>
 
@@ -18,7 +18,7 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h5 class="card-title"><strong><?= $pageTitle; ?></strong></h5>
+                    <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
                     <div class="float-right">
                         <a href="<?= url_to('customer.call.list', $customer->id) ?>" class="btn btn-info">
                             <i class="fa fa-arrow-left mr-1"></i>Back</a>
@@ -33,7 +33,14 @@
                                     <select name="department" id="id_department" class="form-control">
                                         <option value="0">Select Department</option>
                                         <?php foreach ($department as $d) : ?>
-                                        <option value="<?= $d->id; ?>"><?= $d->name; ?></option>
+                                            <?php 
+                                                $id = $d->id; 
+                                                $selected = null;
+                                                if($id == $call->department_id){
+                                                    $selected = 'selected="selected"';
+                                                }
+                                            ?>
+                                            <option value="<?= $d->id; ?>" <?= $selected; ?>><?= $d->name; ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -42,8 +49,14 @@
                                 <label for="call-type">Call Type</label>
                                 <select name="call_type" id="call-type" class="form-control">
                                     <option value="0">Select Type</option>
-                                    <?php foreach ($callType as $t) : ?>
-                                    <option value="<?= $t['id']; ?>"><?= $t['type'] ?></option>
+                                    <?php foreach ($call_type as $t) : ?>
+                                        <?php
+                                            $selected = null;
+                                            if($t['id'] == $call->call_type_id){
+                                                $selected="selected='selected'";
+                                            }
+                                        ?>
+                                    <option value="<?= $t['id']; ?>" <?= $selected; ?>><?= $t['type'] ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -68,7 +81,7 @@
                                         class="datepicker form-control <?php if ($validation->getError('call_date')) : ?>is-invalid<?php endif ?>" 
                                         id="id_call_date"
                                         name="call_date" 
-                                        value="<?= $call->call_date; ?>"
+                                        value="<?= date('d-m-Y', strtotime($call->call_date)); ?>"
                                     />
                                     <?php if ($validation->getError('call_date')) : ?>
                                     <div class=" invalid-feedback">
@@ -141,7 +154,13 @@
                                     <select name="product" id="product" class="form-control">
                                         <option value="0">Select Product</option>
                                         <?php foreach($products as $p): ?>
-                                            <option value="<?= $p->id; ?>"><?= $p->name; ?></option>
+                                            <?php 
+                                                $selected = null;
+                                                if($p->id == $call->product_id){
+                                                    $selected="selected='selected'";
+                                                }    
+                                            ?>
+                                            <option value="<?= $p->id; ?>" <?= $selected; ?>><?= $p->name; ?></option>
                                         <?php endforeach; ?>    
                                     </select>
                                 </div>
@@ -152,7 +171,13 @@
                                     <select name="product_model" id="id_product_model" class="form-control">
                                         <option value="0">Select Model</option>
                                         <?php foreach($product_models as $p): ?>
-                                            <option value="<?= $p->id; ?>"><?= $p->name; ?></option>
+                                            <?php 
+                                                $selected = null;
+                                                if($p->id == $call->product_model_id){
+                                                    $selected="selected='selected'";
+                                                }    
+                                            ?>
+                                            <option value="<?= $p->id; ?>" <?= $selected; ?>><?= $p->name; ?></option>
                                         <?php endforeach; ?>   
                                     </select>
                                 </div>
@@ -165,7 +190,7 @@
                                         class="datepicker form-control" 
                                         id="id_installation_date" 
                                         name="installation_date"
-                                        value="<?= $call->installation_date; ?>"
+                                        value="<?= date('d-m-Y', strtotime($call->installation_date)); ?>"
                                     />
                                 </div>
                             </div>
@@ -173,9 +198,16 @@
                                 <div class="form-group">
                                     <label for="id_service_type">Service Type</label>
                                     <select name="service_type" id="id_service_type" class="form-control">
-                                        <option value="1">Warranty</option>
-                                        <option value="2">AMC</option>
-                                        <option value="3">Non-Warranty</option>
+                                        <option value="0">Select type</option>
+                                        <?php foreach($service_type as $t): ?>
+                                            <?php
+                                                $selected=null;
+                                                if($t->id == $call->service_type_id){
+                                                    $selected="selected='selected'";
+                                                }
+                                            ?>
+                                        <option value="<?= $t->id; ?>" <?= $selected; ?>><?= $t->type; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
@@ -193,17 +225,17 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="id_compliant_nature">Nature of Complaint</label>
+                                    <label for="id_complaint_nature">Nature of Complaint</label>
                                     <input 
                                         type="text" 
-                                        class="form-control <?php if ($validation->getError('compliant_nature')) : ?>is-invalid<?php endif ?>" 
-                                        id="id_compliant_nature" 
-                                        name="compliant_nature"
+                                        class="form-control <?php if ($validation->getError('complaint_nature')) : ?>is-invalid<?php endif ?>" 
+                                        id="id_complaint_nature" 
+                                        name="complaint_nature"
                                         value="<?= $call->complaint_nature; ?>"
                                     />
-                                    <?php if ($validation->getError('compliant_nature')) : ?>
+                                    <?php if ($validation->getError('complaint_nature')) : ?>
                                     <div class=" invalid-feedback">
-                                        <?= $validation->getError('compliant_nature') ?>
+                                        <?= $validation->getError('complaint_nature') ?>
                                     </div>
                                     <?php endif; ?>
                                 </div>
@@ -266,6 +298,20 @@
                 }
                 else{
                     $('#id_expiry_date').prop('readonly', true);
+                }
+            });
+
+            $("#product").change(function(){
+                var productId = $(this).val();
+                if(productId){
+                    $.get(`<?= site_url(); ?>/master/product/${productId}/models`, function(response, status){
+                        var options = '';
+                        data = JSON.parse(response);
+                        for(i=0; i<data.length; i++){
+                            options += `<option value="${data[i].id}">${data[i].name}</option>`
+                        }
+                        $("#id_product_model").html(options);
+                    }); 
                 }
             });
         });

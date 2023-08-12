@@ -7,7 +7,7 @@
 <?= $this->extend("layout/admin") ?>
 
 <?= $this->section('breadcrumb'); ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb float-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Customer</li>
     <li class="breadcrumb-item active">List</li>
@@ -22,7 +22,7 @@ List Customer
 <?= $this->section('content'); ?>
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title"><?= $pageTitle; ?></h5>
+        <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
         <?php if($ionAuth->checkPermission('add_customer')): ?> 
         <div class="float-right">
             <a href="<?= url_to('customer.add') ?>" class="btn btn-success"><i class="fa fa-plus mr-1"></i><?= lang('Falcon.customer_add')?></a>
@@ -41,11 +41,23 @@ List Customer
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="customer_name" placeholder="Customer name"
-                            value="<?= set_value('customer_name'); ?>">
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            name="customer_name" 
+                            placeholder="Customer name"
+                            value="<?= set_value('customer_name'); ?>"
+                        />
                     </div>
                     <div class="col-md-3">
-                        <input type="text" name="area" id="area" class="form-control">
+                        <input 
+                            type="text" 
+                            name="area" 
+                            id="area" 
+                            class="form-control"
+                            placeholder="Area"
+                            value="<?= set_value('area')?>"
+                        />
                     </div>
                     <div class="col-md-2">
                         <input type="submit" value="Search" class="btn btn-info px-5">
@@ -82,5 +94,6 @@ List Customer
             <?php endforeach; ?>
         </div>
     </div>
+
 </div>
 <?= $this->endSection(); ?>

@@ -148,7 +148,7 @@ class Auth extends BaseController
 				//if the login is successful
 				//redirect them back to the home page
 				$this->session->setFlashdata('message', $this->ionAuth->messages());
-				return redirect()->to('/')->withCookies();
+				return redirect()->to('/dashboard')->withCookies();
 			}
 			else
 			{

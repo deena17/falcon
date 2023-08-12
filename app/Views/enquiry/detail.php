@@ -11,7 +11,7 @@
 <?= $this->section("content") ?>
 <div class="card">
     <div class="card-header py-2">
-        <h5 class="card-title pt-2"><strong><?= $pageTitle; ?></strong></h5>
+        <h5 class="card-title pt-2"><strong><?= $page_title; ?></strong></h5>
         <a href="<?= isset($customer) ? url_to('customer.enquiry.list', $customer->id) : url_to('enquiry.list'); ?>" class="btn btn-info float-right">
             <i class="fa fa-arrow-left mr-2"></i>Back
         </a>
@@ -21,35 +21,43 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="enquiry-number">Enquiry Number</label>
+                        <label for="enquiry-number" class="requiredField">Enquiry Number</label>
                         <input 
                             type="text" 
                             class="form-control" 
                             id="enquiry-number" 
                             name="enquiry_number" 
-                            value="<?= $enquiry_number ?>" 
+                            value="<?= $enquiry->enquiry_number; ?>" 
                             readonly 
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="enquiry-date">Enquiry Date</label>
+                        <label for="enquiry-date" class="requiredField">Enquiry Date</label>
                         <input 
                             type="text" 
                             class="form-control datepicker" 
                             id="enquiry-date" 
                             name="enquiry_date" 
+                            value="<?= $enquiry->enquiry_date?>"
                         />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="department">Department</label>
+                        <label for="department" class="requiredField">Department</label>
                         <select name="department" id="department" class="form-control">
                             <option value="0">Select Department</option>
                             <?php foreach($departments as $d): ?>
-                                <option value="<?= $d->id; ?>"><?= $d->name; ?></option>
+                                <?php 
+                                    $selected = null;
+                                    $id = $enquiry->department_id;
+                                    if($id == $d->id){
+                                        $selected='selected="selected"';
+                                    }    
+                                ?>
+                                <option value="<?= $d->id; ?>" <?= $selected; ?>><?= $d->name; ?></option>
                             <?php endforeach; ?>    
                         </select>
                     </div>
@@ -71,7 +79,7 @@
                             id="customer-name" 
                             name="customer_name" 
                             value="<?= set_value('customer_name', isset($customer) ? $customer->customer_name : ''); ?>" 
-                            <?php if(isset($customer)) echo "readonly" ?> 
+                            readonly="<?php if(isset($customer)) echo "readonly" ?> "
                         />
                     </div>
                 </div>
@@ -84,7 +92,7 @@
                             id="contact-number" 
                             name="contact_number" 
                             value="<?= set_value('contact_number', isset($customer) ? $customer->contact_number : ''); ?>" 
-                            <?php if(isset($customer)) echo "readonly" ?>  
+                            readonly="<?php if(isset($customer)) echo "readonly" ?>"  
                         />
                     </div>
                 </div>
@@ -97,7 +105,7 @@
                             id="contact-landline" 
                             name="contact_landline" 
                             value="<?= set_value('contact_landline', isset($customer) ? $customer->contact_landline : ''); ?>" 
-                            <?php if(isset($customer)) echo "readonly" ?> 
+                            readonly="<?php if(isset($customer)) echo "readonly" ?>" 
                         />
                     </div>
                 </div>
@@ -187,31 +195,44 @@
                             class="form-control" 
                             id="distance" 
                             name="distance" 
-                            value="<?= set_value('distance'); ?>" 
+                            value="<?= set_value('distance', $enquiry->distance); ?>" 
                         />
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
-                        <label for="from_time">From Time</label>
+                        <label for="from-time">From Time</label>
                         <input 
                             type="text" 
-                            class="form-control" 
-                            id="from_time" 
+                            class="timepicker form-control" 
+                            id="from-time" 
                             name="from_time" 
-                            value="<?= set_value('from_time'); ?>" 
+                            value="<?= set_value('from_time', $enquiry->from_time); ?>" 
                         />
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label for="to-time">To Time</label>
                         <input 
                             type="text" 
-                            class="form-control" 
+                            class="timepicker form-control" 
                             id="to-time" 
                             name="to_time" 
-                            value="<?= set_value('to_time'); ?>" 
+                            value="<?= set_value('to_time', $enquiry->to_time); ?>" 
+                        />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="duration" 
+                            name="duration" 
+                            value="<?= set_value('duration', $enquiry->duration); ?>" 
+                            readonly="readonly"
                         />
                     </div>
                 </div>
@@ -223,19 +244,19 @@
                             class="form-control" 
                             id="marketing_reference" 
                             name="marketing_reference" 
-                            value="<?= set_value('marketing_reference'); ?>" 
+                            value="<?= set_value('marketing_reference', $enquiry->marketing_reference); ?>" 
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="traveling_kms">Traveling KMs</label>
+                        <label for="traveling_kms">Travelling KMs</label>
                         <input 
                             type="text" 
                             class="form-control" 
                             id="traveling_kms" 
-                            name="traveling_kms" 
-                            value="<?= set_value('traveling_kms'); ?>" 
+                            name="travelling_kms" 
+                            value="<?= set_value('travelling_kms', $enquiry->travelling_kms); ?>" 
                         />
                     </div>
                 </div>
@@ -247,7 +268,7 @@
                             class="form-control" 
                             id="forward_to" 
                             name="forward_to" 
-                            value="<?= set_value('forward_to'); ?>" 
+                            value="<?= set_value('forward_to', $enquiry->forward_to); ?>" 
                         />
                     </div>
                 </div>
@@ -257,14 +278,21 @@
                         <select name="status" id="status" class="form-control">
                             <option value="0">Select status</option>
                             <?php foreach($status as $s): ?>
-                                <option value="<?= $s->id; ?>"><?= $s->status; ?></option>
+                                <?php 
+                                    $id = $enquiry->status;
+                                    $selected = null;
+                                    if($id == $s->id){
+                                        $selected = 'selected="selected"';
+                                    }
+                                ?>
+                                <option value="<?= $s->id; ?>" <?= $selected; ?>><?= $s->status; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <label for="remarks">Remarks</label>
-                    <textarea name="remarks" id="remarks" cols="30" rows="3" class="form-control"><?= set_value('remarks'); ?></textarea>
+                    <textarea name="remarks" id="remarks" cols="30" rows="3" class="form-control"><?= $enquiry->remarks; ?></textarea>
                 </div>
             </div>
             <div class="row mt-4">
@@ -272,9 +300,6 @@
                     <div class="card card-outline card-warning">
                         <div class="card-header">
                             <h5 class="card-title"><strong>Products</strong></h5>
-                            <button class="btn btn-success float-right" id="add-new-button">
-                                <i class="fa fa-plus mr-2"></i>Add Product
-                            </button>
                         </div>
                         <div class="card-body p-2">
                             <div class="row">
@@ -288,11 +313,46 @@
                                                 <td width="50">Quantity</td>
                                                 <td>Description</td>
                                                 <td>Specification</td>
-                                                <td width="80">Action</td>
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                        <?php static $index=1; foreach($enquiry_products as $ep): ?>
+                                            <tr>
+                                                <td>
+                                                    <select name="product[]" id="product_<?= $index; ?>" class="form-control" onChange="updateModel(<?= $index; ?>)"> 
+                                                    <?php foreach($products as $p): ?>
+                                                        <?php  $selected = null ?>   
+                                                        <?php   if ($p->id == $ep->product_id): 
+                                                                    $selected = "selected='selected'";
+                                                                endif;
+                                                        ?>
+                                                        <option value="<?= $p->id; ?>" <?= $selected; ?>><?= $p->name; ?></option>
+                                                    <?php endforeach; ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="product_model[]" id="product_model_<?= $index;?>" class="form-control">
+                                                        <?php foreach($product_models as $p): ?>
+                                                            <?php  $selected = null ?>   
+                                                            <?php   if ($p->id == $ep->product_model_id): 
+                                                                        $selected = "selected='selected'";
+                                                                    endif;
+                                                            ?>
+                                                            <option value="<?= $p->id; ?>" <?= $selected; ?>><?= $p->name; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="quantity[]" value="<?= $ep->quantity; ?>">
+                                                </td>
+                                                <td>
+                                                    <textarea name="description[]" id="description" cols="30" rows="1" class="form-control"><?= $ep->description; ?></textarea>
+                                                </td>
+                                                <td>
+                                                    <textarea name="specification[]" id="specification" cols="30" rows="1" class="form-control"><?= $ep->specification; ?></textarea>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -300,9 +360,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <input type="submit" class="btn btn-success" value="Submit">
             </div>
         </form>
     </div>
@@ -320,6 +377,13 @@
         $('#district').prop('readonly', true);
         $('#state').prop('readonly', true);
         $('#pincode').prop('readonly', true);
+
+        $('#to-time').blur(function(){
+            var from_time = $("#from-time").val();
+            var to_time = $("#to-time").val();
+            var duration = ( new Date("1970-1-1 " + to_time) - new Date("1970-1-1 " + from_time))
+            alert(to_time);
+        });
 
         $('#add-new-button').click(function(e){
             e.preventDefault();

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= isset($pageTitle) ? $pageTitle : '' ?> - Golden Falcon International</title>
+    <title><?= isset($page_title) ? $page_title : '' ?> - Golden Falcon International</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -22,6 +22,7 @@
     <?= link_tag('public/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css'); ?>
     <?= link_tag('public/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css'); ?>
     <?= link_tag('public/plugins/jquery-ui/jquery-ui.min.css'); ?>
+    <?= link_tag('public/plugins/timepicker/jquery.timepicker.min.css'); ?>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -141,6 +142,7 @@
     <!-- AdminLTE App -->
     <?= script_tag('public/dist/js/adminlte.min.js'); ?>
     <?= script_tag('public/js/custom-script.js'); ?>
+    <?= script_tag('public/plugins/timepicker/jquery.timepicker.min.js'); ?>
 
     <?= $this->renderSection('scripts'); ?>
     <script>
@@ -148,13 +150,17 @@
         //Initialize Select2 Elements
         $('.select2').select2();
         $(".datepicker").datepicker({
-          dateFormat:'mm/dd/yy',
+          dateFormat:'dd/mm/yy',
           changeMonth: true,
           changeYear: true,
           maxDate: 0,
           yearRange: "-90:+00"
         });
         $('.duallistbox').bootstrapDualListbox();
+        $('.timepicker').timepicker({
+          'timeFormat': 'H:i ',
+          show2400: true
+        });
     })
     </script>
     <!-- <script>

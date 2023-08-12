@@ -2,108 +2,152 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\RESTful\ResourceController;
+use App\Controllers\BaseController;
 use App\Models\PaymentModel;
+use App\Models\CustomerModel;
+use App\Models\CurrencyModel;
+use App\Models\PaymentMethodModel;
 
-class Payment extends ResourceController{
+class Payment extends BaseController
+{
+    public $data = [];
 
-    public function index()
+    protected $viewsFolder = '\App\Views\payment';
+
+    public function __construct()
     {
-        $model = new PaymentModel();
-        $data = $model->findAll();
-        return $this->respond($data);
+        helper(['url', 'form']);
+        $this->ionAuth = new \App\Libraries\IonAuth();
+        $this->model = new PaymentModel();
+        $this->customer = new CustomerModel();
+        $this->payment_method = new PaymentMethodModel();
+        $this->currency = new CurrencyModel();
     }
 
-    /**
-     * Return the properties of a resource object
-     *
-     * @return mixed
-     */
-    public function show($id = null)
+    public function index($customer=null)
     {
-        $model = new PaymentModel();
-        $data = $model->where('id', $id)->first();
-        return $this->respond($data);
+        $this->data['page_title'] = 'Payment List';
+        $this->data['payments'] = $this->model->where(['display'=> 'Y'])->find();
+        $this->data['customer'] = $this->customer->find($customer);
+        return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'list', $this->data);
     }
 
-    /**
-     * Create a new resource object, from "posted" parameters
-     *
-     * @return mixed
-     */
-    public function create()
+    public function create($customer= null)
     {
-        $model = new PaymentModel();
-        $data = [
-            'customer_id' => $this->request->getVar('customer'),
-            'date' => $this->request->getVar('date'),
-            'receipt_number' => $this->request->getVar('receipt_number'),
-            'amount' => $this->request->getVar('amount'),
-            'payment_mode' => $this->request->getVar('payment_mode'),
-            'reference_number' => $this->request->getVar('reference_number'),
-            'remarks' => $this->request->getVar('remarks'),
-            'receipt' => $this->request->getVar('receipt')
+        $this->data['page_title'] = 'New Payment';
+        $this->data['customer'] = $this->customer->find($customer);
+        $this->data['payment_number'] = $this->model->generate_payment_number();
+        $this->data['payment_method'] = $this->payment_method->findAll();
+        $this->data['currency'] = $this->currency->findAll();
+        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'create', $this->data);
+        }
+        $rules = [
+            'payment_date' => 'required',
+            'amount' => 'required'
         ];
-        $insert_id = $model->insert($data);
-        $response = [
-            'status' => 200,
-            'error' => false,
-            'message' => 'Payment created successfully',
-            'data' => $model->find($insert_id)
-        ];
-        return $this->respondCreated($response);
-    }
-
-
-    /**
-     * Add or update a model resource, from "posted" properties
-     *
-     * @return mixed
-     */
-    public function update($id = null)
-    {
-        $model = new PaymentModel();
-        $data = [
-            'id' => $id,
-            'customer_id' => $this->request->getVar('customer'),
-            'date' => $this->request->getVar('date'),
-            'receipt_number' => $this->request->getVar('receipt_number'),
-            'amount' => $this->request->getVar('amount'),
-            'payment_mode' => $this->request->getVar('payment_mode'),
-            'reference_number' => $this->request->getVar('reference_number'),
-            'remarks' => $this->request->getVar('remarks'),
-            'receipt' => $this->request->getVar('receipt')
-        ];
-        $model->update($id, $data);
-        $response = [
-            'status' => 200,
-            'error' => false,
-            'message' => 'Payment updated successfully',
-            'data' => $data,
-        ];
-        return $this->respond($response);
-    }
-
-    /**
-     * Delete the designated resource object from the model
-     *
-     * @return mixed
-     */
-    public function delete($id = null)
-    {
-        $model = new PaymentModel();
-        $data = $model->find($id);
-        if($data){
-            $model->delete($id);
-            $response = [
-                'status' => 200,
-                'error' => false,
-                'message' => 'Payment deleted successfully'
-            ];
-            $this->respondDeleted($response);
+        if(!$this->validate($rules)){
+            return view(
+                $this->viewsFolder.DIRECTORY_SEPARATOR.'create',
+                $this->data,
+                [$this->validator]
+            );
         }
         else{
-            return $this->failNotFound('No payment found with id = '.$id);
+            $data = [
+                'customer_id' => $customer,
+                'payment_number' => $this->request->getPost('payment_number'),
+                'payment_date' => date('Y-m-d', strtotime($this->request->getPost('payment_date'))),
+                'mode_of_payment' => $this->request->getPost('payment_method'),
+                'customer_name' => $this->request->getPost('customer_name'),
+                'contact_number' => $this->request->getPost('contact_number'),
+                'contact_landline' => $this->request->getPost('contact_landline'),
+                'street' => $this->request->getPost('street'),
+                'city' => $this->request->getPost('city'),
+                'district' => $this->request->getPost('district'),
+                'state' => $this->request->getPost('state'),
+                'pincode' => $this->request->getPost('pincode'),
+                'amount' => $this->request->getPost('amount'),
+                'ref_number' => $this->request->getPost('reference_number'),   
+                'remarks' => $this->request->getPost('remarks'),
+                'currency_id' => $this->request->getPost('currency'),
+                'display' => 'Y',
+            ];
+            $id = $this->model->insert($data);
+            if(!empty($customer)){
+                return redirect()->to('payment/list');
+            }
+            else{
+                return redirect()->to("customer/$customer/payment/list");
+            }
         }
     }
+
+
+    public function edit($customer=null, $id = null)
+    {
+        $this->data['page_title'] = 'Edit Payment';
+        $this->data['customer'] = $this->customer->find($customer);
+        $this->data['payment_number'] = $this->model->generate_payment_number();
+        $this->data['payment_method'] = $this->payment_method->findAll();
+        $this->data['payment'] = $this->model->find($id);
+        $this->data['currency'] = $this->currency->findAll();
+        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'edit', $this->data);
+        }
+        $data = [
+            'customer_id' => $customer,
+            'payment_number' => $this->request->getPost('payment_number'),
+            'payment_date' => date('Y-m-d', strtotime($this->request->getPost('payment_date'))),
+            'mode_of_payment' => $this->request->getPost('payment_method'),
+            'customer_name' => $this->request->getPost('customer_name'),
+            'contact_number' => $this->request->getPost('contact_number'),
+            'contact_landline' => $this->request->getPost('contact_landline'),
+            'street' => $this->request->getPost('street'),
+            'city' => $this->request->getPost('city'),
+            'district' => $this->request->getPost('district'),
+            'state' => $this->request->getPost('state'),
+            'pincode' => $this->request->getPost('pincode'),
+            'amount' => $this->request->getPost('amount'),
+            'ref_number' => $this->request->getPost('reference_number'),   
+            'remarks' => $this->request->getPost('remarks'),
+            'currency_id' => $this->request->getPost('currency'),
+            'display' => 'Y',
+        ];
+        $this->model->update($id, $data);
+        if(empty($customer)){
+            return redirect()->to('payment/list');
+        }
+        else{
+            return redirect()->to("customer/$customer/payment/list");
+        }
+    }
+
+    public function detail($customer=null, $id = null)
+    {
+        $this->data['page_title'] = 'Payment Detail';
+        $this->data['customer'] = $this->customer->find($customer);
+        $this->data['payment_number'] = $this->model->generate_payment_number();
+        $this->data['payment_method'] = $this->payment_method->findAll();
+        $this->data['payment'] = $this->model->find($id);
+        $this->data['currency'] = $this->currency->findAll();
+        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'detail', $this->data);
+        }
+    }
+
+    public function delete($customer, $id = null)
+    {
+        $this->data['page_title'] = 'Delete Payment';
+        $this->data['payment'] = $this->model->find($id);
+        $this->data['customer'] = $this->customer->find($customer);
+        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            return view($this->viewsFolder.'/'.'delete', $this->data);
+        }
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $id = $this->request->getPost('id');
+            $this->model->update($id, ['display'=>'N']);
+            return redirect()->to("customer/$customer/payment/list");
+        }
+    } 
 }

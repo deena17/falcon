@@ -16,7 +16,7 @@ Contact List
 <?= $this->section("main") ?>
 <div class="card card-outline card-primary">
     <div class="card-header">
-        <h5 class="card-title"><strong>Contact List</strong></h5>
+        <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
         <a href="<?= url_to('customer.contact.add', $customer->id); ?>" class="btn btn-success float-right">
             <i class="fa fa-plus mr-2"></i>New Contact
         </a>

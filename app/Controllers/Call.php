@@ -10,6 +10,7 @@ use App\Models\ContactModel;
 use App\Models\DepartmentModel;
 use App\Models\ProductModel;
 use App\Models\ProductItemModel;
+use App\Models\ServiceTypeModel;
 
 class Call extends \App\Controllers\BaseController
 {
@@ -29,54 +30,25 @@ class Call extends \App\Controllers\BaseController
         $this->department = new DepartmentModel();
         $this->product = new ProductModel();
         $this->productModel = new ProductItemModel();
+        $this->service_type = new ServiceTypeModel();
     }
-    public function index()
+    public function index($customer=null)
     {
-
-        $this->data['pageTitle'] = 'Calls List';
-        $this->data['calls'] = $this->call->where('customer_id', $customer)->find();
-        $this->data['customer'] = $this->customer->where('id', $customer)->first();
+        $this->data['page_title'] = 'Service Call List';
+        if(!empty($customer)){
+            $this->data['calls'] = $this->call->where(['customer_id'=>$customer, 'display' => 'Y'])->find();
+            $this->data['customer'] = $this->customer->where('display','Y')->find($customer);
+        }
+        else{
+            $this->data['calls'] = $this->call->where('display','Y')->findAll();
+        }
         return view($this->viewsFolder . '/' . 'list', $this->data);
     }
 
-    public function customer_call($customer)
-    {
-        $this->data['pageTitle'] = 'Calls List';
-        $this->data['calls'] = $this->call->where('customer_id', $customer)->find();
-        $this->data['customer'] = $this->customer->where('id', $customer)->first();
-        return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'list', $this->data);
-    }
-
-    public function show($id = null)
-    {
-        $model = new CallModel();
-        $data = $model->find($id);
-        if ($data) {
-            $response = [
-                'status' => 200,
-                'error' => false,
-                'message' => 'Call details retrived successfully',
-                'data' => $data
-            ];
-        } else {
-            $response = [
-                'status' => 404,
-                'error' => true,
-                'message' => 'Call details not found with id=' . $id,
-            ];
-        }
-        return $this->respond($response);
-    }
-
-    /**
-     * Create a new resource object, from "posted" parameters
-     *
-     * @return mixed
-     */
     public function create($customer)
     {
         $this->data['customer'] = $this->customer->find($customer);
-        $this->data['pageTitle'] = 'Add Call';
+        $this->data['page_title'] = 'New Service Call';
         $this->data['contacts'] = $this->contact->where('customer_id', $customer)->find();
         $this->data['callType'] = $this->type->findAll();
         $this->data['callRelated'] = $this->related->findAll();
@@ -84,7 +56,7 @@ class Call extends \App\Controllers\BaseController
         $this->data['products'] = $this->product->findAll();
         $this->data['product_models'] = $this->productModel->findAll();
         $this->data['call_number'] = $this->call->generateCallNumber();
-
+        $this->data['service_type'] = $this->service_type->findAll();
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder .'/'. 'create', $this->data);
         }
@@ -92,10 +64,9 @@ class Call extends \App\Controllers\BaseController
             $rules = [
                 'call_date' => 'required',
                 'call_time' => 'required',
-                // 'call_number' => 'required',
                 'contact_person' => 'required',
                 'contact_number' => 'required',
-                'compliant_nature' => 'required',
+                'complaint_nature' => 'required',
             ];
             if(!$this->validate($rules)){
                 return view(
@@ -108,22 +79,29 @@ class Call extends \App\Controllers\BaseController
                     'customer_id' => $customer,
                     'department_id' => $this->request->getPost('department'),
                     'call_number' => $this->request->getPost('call_number'),
-                    'call_date' => $this->request->getPost('call_date'),
+                    'call_date' => date('Y-m-d', strtotime($this->request->getPost('call_date'))),
                     'call_time' => $this->request->getPost('call_time'),
                     'call_type_id' => $this->request->getPost('call_type'),
-                    'contact_person' => $this->request->getPost('contact_person'),
                     'contact_number' => $this->request->getPost('contact_number'),
                     'product_id' => $this->request->getPost('product'),
                     'product_model_id' => $this->request->getPost('product_model'),
-                    'installation_date' => $this->request->getPost('installation_date'),
-                    'expiry_date' => $this->request->getPost('expiry_date'),
+                    'installation_date' => date('Y-m-d', strtotime($this->request->getPost('installation_date'))),
+                    'expiry_date' => date('Y-m-d', strtotime($this->request->getPost('expiry_date'))),
                     'service_type_id' => $this->request->getPost('service_type'),
-                    'compliant_nature' => $this->request->getPost('compliant_nature'),
+                    'complaint_nature' => $this->request->getPost('complaint_nature'),
                     'remarks' => $this->request->getPost('remarks'),
                     'created_by' => $this->ionAuth->user()->row()->id,
                     'updated_by' => $this->ionAuth->user()->row()->id,
                     'status_id' => 6,
+                    'allocate_status' => 0
                 ];
+                if($this->request->getPost('contact_person') == 'o'){
+                    $data['contact_name'] = $this->request->getPost('contact_person1');
+                }
+                else{
+                    $contact = explode("~", $this->request->getPost('contact_person'));
+                    $data['contact_name'] = $contact[1];
+                }
                 $id = $this->call->insert($data);
                 if($id){
                     return redirect()->to("customer/$customer/call/list");
@@ -139,44 +117,48 @@ class Call extends \App\Controllers\BaseController
      */
     public function edit($customer, $id = null)
     {
-        $this->data['pageTitle'] = 'Edit Calls';
+        $this->data['page_title'] = 'Edit Service Call';
         $this->data['customer'] = $this->customer->find($customer);
         $this->data['contacts'] = $this->contact->where('customer_id', $customer)->find();
-        $this->data['callType'] = $this->type->findAll();
-        $this->data['callRelated'] = $this->related->findAll();
+        $this->data['call_type'] = $this->type->findAll();
         $this->data['department'] = $this->department->getCustomerDepartments($customer);
         $this->data['products'] = $this->product->findAll();
         $this->data['product_models'] = $this->productModel->findAll();
+        $this->data['service_type'] = $this->service_type->findAll();
         $this->data['call'] = $this->call->find($id);
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder.'/'.'edit', $this->data);
         }
-        $model = new CallModel();
         $data = [
-            'id' => $id,
-            'customer_id' => $this->request->getVar('customer_id'),
-            'call_date' => $this->request->getVar('call_date'),
-            'call_time' => $this->request->getVar('call_time'),
-            'description' => $this->request->getVar('description'),
-            'call_type' => $this->request->getVar('call_type'),
-            'related' => $this->request->getVar('related')
+            'customer_id' => $customer,
+            'department_id' => $this->request->getPost('department'),
+            'call_number' => $this->request->getPost('call_number'),
+            'call_date' => date('Y-m-d', strtotime($this->request->getPost('call_date'))),
+            'call_time' => $this->request->getPost('call_time'),
+            'call_type_id' => $this->request->getPost('call_type'),
+            'contact_number' => $this->request->getPost('contact_number'),
+            'product_id' => $this->request->getPost('product'),
+            'product_model_id' => $this->request->getPost('product_model'),
+            'installation_date' => date('Y-m-d', strtotime($this->request->getPost('installation_date'))),
+            'expiry_date' => date('Y-m-d', strtotime($this->request->getPost('expiry_date'))),
+            'service_type_id' => $this->request->getPost('service_type'),
+            'complaint_nature' => $this->request->getPost('complaint_nature'),
+            'remarks' => $this->request->getPost('remarks'),
+            'created_by' => $this->ionAuth->user()->row()->id,
+            'updated_by' => $this->ionAuth->user()->row()->id,
+            'status_id' => 6,
         ];
-        $affected_row = $model->update($id, $data);
-        if ($affected_row) {
-            $response = [
-                'status' => 200,
-                'error' => false,
-                'message' => 'Call details updated successfully',
-                'data' => $model->find($id)
-            ];
-        } else {
-            $response = [
-                'status' => 500,
-                'error' => true,
-                'message' => $model->errors()
-            ];
+        if($this->request->getPost('contact_person') == 'o'){
+            $data['contact_name'] = $this->request->getPost('contact_person1');
         }
-        return $this->respond($response);
+        else{
+            $contact = explode("~", $this->request->getPost('contact_person'));
+            $data['contact_name'] = $contact[1];
+        }
+        $affected_row = $this->call->update($id, $data);
+        if ($affected_row) {
+            return redirect()->to("customer/$customer/call/list");
+        }
     }
 
     /**
@@ -184,25 +166,19 @@ class Call extends \App\Controllers\BaseController
      *
      * @return mixed
      */
-    public function delete($id = null)
+    public function delete($customer, $id = null)
     {
-        $model = new CallModel();
-        $data = $model->find($id);
-        if ($data) {
-            $model->delete($id);
-            $response = [
-                'status' => 200,
-                'error' => false,
-                'message' =>  'Call details deleted successfully',
-            ];
-        } else {
-            $response = [
-                'status' => 404,
-                'error' => true,
-                'message' =>  'No Call details found with id=' . $id,
-            ];
+        $this->data['page_title'] = 'Delete Service Call';
+        $this->data['call'] = $this->call->find($id);
+        $this->data['customer'] = $this->customer->find($customer);
+        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            return view($this->viewsFolder.'/'.'delete', $this->data);
         }
-        $this->respondDeleted($response);
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $id = $this->request->getPost('id');
+            $this->call->update($id, ['display' => 'N']);
+            return redirect()->to("customer/$customer/call/list");
+        }
     }
 
     private function call_type($id)
@@ -215,21 +191,70 @@ class Call extends \App\Controllers\BaseController
         return $query();
     }
 
-    public function allocation($customer)
+    public function allocation()
     {
-        $this->data['customer'] = $this->customer->find($customer);
-        $this->data['pageTitle'] = 'Call Allocation';
-        $this->data['callType'] = $this->type->findAll();
-        $this->data['callRelated'] = $this->related->findAll();
+        $this->data['page_title'] = 'Call Allocation';
+        $this->data['calls'] = $this->call->get_calls();
         return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'allocation', $this->data);
     }
 
-    public function allocate($customer)
+    public function modify_allocation()
     {
-        $this->data['customer'] = $this->customer->find($customer);
-        $this->data['pageTitle'] = 'Call Allocation';
-        $this->data['callType'] = $this->type->findAll();
-        $this->data['callRelated'] = $this->related->findAll();
-        return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'allocate', $this->data);
+        $this->data['page_title'] = 'Modify Call Allocation';
+        $this->data['calls'] = $this->call->get_calls(1);
+        return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'allocation', $this->data);
+    }
+
+    public function allocate($call)
+    {
+        $this->data['page_title'] = 'Call Allocation';
+        $this->data['call'] = $this->call->get_call_detail($call);
+        $this->data['engineer'] = $this->ionAuth->user()->result();
+        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'allocate', $this->data);
+        }
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $rules = [
+                'due_date' => 'required',
+                'engineer' => 'required',
+            ];
+            if(!$this->validate($rules)){
+                return view(
+                    $this->viewsFolder.'/'.'allocate',
+                    $this->data,
+                    [$this->validator]
+                );
+            }else{
+                $allocation = new \App\Models\ServiceCallAllocationModel();
+                if($this->request->getPost('is_combined') == 'yes'){
+                    $this->call->set('is_combined', 1)->set('allocate_status', 1)->where('id', $call)->update();
+                    $engineer = $this->request->getPost('engineer');
+                    foreach ($engineer as $key => $value) :
+                        $data = [
+                            'engineer_id'   => $value,
+                            'call_id'       => $call,
+                            'due_date'      => $this->request->getPost('due_date'),
+                            'remarks'       => $this->request->getPost('remarks'),
+                            'created_by'    => $this->ionAuth->user()->row()->id,
+                            'updated_by'    => $this->ionAuth->user()->row()->id,
+                        ];
+                        $allocation->insert($data);
+                    endforeach;
+                }
+                else{
+                    $this->call->set('is_combined', 0)->set('allocate_status', 1)->where('id', $call)->update();
+                    $data = [
+                        'engineer_id'   => $this->request->getPost('engineer'),
+                        'call_id'       => $call,
+                        'due_date'      => $this->request->getPost('due_date'),
+                        'remarks'       => $this->request->getPost('remarks'),
+                        'created_by'    => $this->ionAuth->user()->row()->id,
+                        'updated_by'    => $this->ionAuth->user()->row()->id,
+                    ];
+                    $allocation->insert($data);
+                }
+                return redirect()->to('call/allocation');
+            }
+        }
     }
 }

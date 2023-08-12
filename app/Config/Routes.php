@@ -25,7 +25,7 @@ $routes->set404Override();
 // where controller filters or CSRF protection are bypassed.
 // If you don't want to define all routes, please use the Auto Routing (Improved).
 // Set `$autoRoutesImproved` to true in `app/Config/Feature.php` and set the following to true.
-$routes->setAutoRoute(false);
+$routes->setAutoRoute(true);
 
 /*
  * --------------------------------------------------------------------
@@ -74,6 +74,76 @@ $routes->group('master', static function ($routes) {
     $routes->match(['get', 'post'], 'product/(:num)/models', 'Model::getModelByProduct/$1', ['as' => 'productmodel.getbyproduct']);
 });
 
+$routes->match(['get', 'post'], 'product/flatknitting/new','Product::addFlatKnitting', ['as' => 'flatknitting.add']);
+$routes->match(['get', 'post'], 'product/circularknitting/new','Product::addCircularKnitting', ['as' => 'circularknitting.add']);
+$routes->match(['get', 'post'], 'product/embroidery/new','Product::addEmbroidery', ['as' => 'embroidery.add']);
+
+$routes->group('customer', static function ($routes) {
+    $routes->get('/', 'Customer::index', ['as' => 'customer.list']);
+    $routes->match(['get', 'post'], 'create', 'Customer::create', ['as' => 'customer.add']);
+    $routes->match(['get', 'post'], '(:num)/edit', 'Customer::edit/$1', ['as' => 'customer.edit']);
+    $routes->match(['get', 'post'], '(:num)/delete', 'Customer::delete/$1', ['as' => 'customer.delete']);
+    $routes->get('(:num)/detail', 'Customer::detail/$1', ['as' => 'customer.detail']);
+});
+
+$routes->get('customer/(:num)/call/list', 'Call::index/$1', ['as' => 'customer.call.list']);
+$routes->match(['get', 'post'], 'customer/(:num)/call/create', 'Call::create/$1', ['as' => 'customer.call.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/call/(:num)/edit', 'Call::edit/$1/$2', ['as' => 'customer.call.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/call/(:num)/delete', 'Call::delete/$1/$2', ['as' => 'customer.call.delete']);
+$routes->match(['get', 'post'], 'call/allocation', 'Call::allocation', ['as' => 'call.allocation']);
+$routes->match(['get', 'post'], 'call/(:num)/allocate', 'Call::allocate/$1', ['as' => 'call.allocate']);
+$routes->match(['get', 'post'], 'call/allocation/modify', 'Call::modify_allocation', ['as' => 'call.modify.allocation']);
+
+$routes->get('customer/(:num)/document/list', 'Document::index/$1', ['as' => 'customer.document.list']);
+$routes->match(['get', 'post'], 'customer/(:num)/document/create', 'Document::create/$1', ['as' => 'customer.document.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/document/(:num)/edit', 'Document::edit/$1/$2', ['as' => 'customer.document.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/document/(:num)/delete', 'Document::delete/$1/$2', ['as' => 'customer.document.delete']);
+
+$routes->get('enquiry/list', 'Enquiry::index', ['as' => 'enquiry.list']);
+$routes->get('customer/(:num)/enquiry/list', 'Enquiry::index/$1', ['as' => 'customer.enquiry.list']);
+$routes->match(['get', 'post'], 'enquiry/create', 'Enquiry::create', ['as' => 'enquiry.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/enquiry/create', 'Enquiry::create/$1', ['as' => 'customer.enquiry.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/edit', 'Enquiry::update/$1/$2', ['as' => 'customer.enquiry.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/delete', 'Enquiry::delete/$1/$2', ['as' => 'customer.enquiry.delete']);
+$routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/detail', 'Enquiry::detail/$1/$2', ['as' => 'customer.enquiry.detail']);
+$routes->match(['get', 'post'], 'enquiry/(:num)/edit', 'Enquiry::edit/$1', ['as' => 'enquiry.edit']);
+$routes->match(['get', 'post'], 'enquiry/(:num)/delete', 'Enquiry::delete/$1', ['as' => 'enquiry.delete']);
+
+$routes->get('invoice/list', 'Invoice::index/$1', ['as' => 'invoice.list']);
+$routes->get('customer/(:num)/invoice/list', 'Invoice::index/$1', ['as' => 'customer.invoice.list']);
+$routes->match(['get', 'post'], 'invoice/create', 'Invoice::create', ['as' => 'invoice.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/invoice/create', 'Invoice::create/$1', ['as' => 'customer.invoice.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/invoice/(:num)/edit', 'Invoice::edit/$1/$2', ['as' => 'customer.invoice.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/invoice/(:num)/detail', 'Invoice::detail/$1/$2', ['as' => 'customer.invoice.detail']);
+$routes->match(['get', 'post'], 'customer/(:num)/invoice/(:num)/delete', 'Invoice::delete/$1/$2', ['as' => 'customer.invoice.delete']);
+
+$routes->get('quotation/list', 'Quotation::index/$1', ['as' => 'quotation.list']);
+$routes->match(['get', 'post'], 'quotation/create', 'Quotation::create', ['as' => 'quotation.add']);
+$routes->get('customer/(:num)/quotation/list', 'Quotation::index/$1', ['as' => 'customer.quotation.list']);
+$routes->match(['get', 'post'], 'customer/(:num)/quotation/create', 'Quotation::create/$1', ['as' => 'customer.quotation.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/quotation/(:num)/edit', 'Quotation::edit/$1/$2', ['as' => 'customer.quotation.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/quotation/(:num)/detail', 'Quotation::detail/$1/$2', ['as' => 'customer.quotation.detail']);
+$routes->match(['get', 'post'], 'customer/(:num)/quotation/(:num)/delete', 'Quotation::delete/$1/$2', ['as' => 'customer.quotation.delete']);
+
+$routes->get('sales-order/list', 'SalesOrder::index/$1', ['as' => 'salesorder.list']);
+$routes->match(['get', 'post'], 'sales-order/create', 'SalesOrder::create', ['as' => 'salesorder.add']);
+$routes->get('customer/(:num)/sales-order/list', 'SalesOrder::index/$1', ['as' => 'customer.salesorder.list']);
+$routes->match(['get', 'post'], 'customer/(:num)/sales-order/create', 'SalesOrder::create/$1', ['as' => 'customer.salesorder.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/sales-order/(:num)/edit', 'SalesOrder::edit/$1/$2', ['as' => 'customer.salesorder.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/sales-order/(:num)/detail', 'SalesOrder::detail/$1/$2', ['as' => 'customer.salesorder.detail']);
+$routes->match(['get', 'post'], 'customer/(:num)/sales-order/(:num)/delete', 'SalesOrder::delete/$1/$2', ['as' => 'customer.salesorder.delete']);
+
+$routes->get('customer/(:num)/payment/list', 'Payment::index/$1', ['as' => 'customer.payment.list']);
+$routes->match(['get', 'post'], 'customer/(:num)/payment/create', 'Payment::create/$1', ['as' => 'customer.payment.add']);
+$routes->match(['get', 'post'], 'customer/(:num)/payment/(:num)/edit', 'Payment::edit/$1/$2', ['as' => 'customer.payment.edit']);
+$routes->match(['get', 'post'], 'customer/(:num)/payment/(:num)/detail', 'Payment::detail/$1/$2', ['as' => 'customer.payment.detail']);
+$routes->match(['get', 'post'], 'customer/(:num)/payment/(:num)/delete', 'Payment::delete/$1/$2', ['as' => 'customer.payment.delete']);
+
+$routes->match(['get', 'post'], 'installation/flatknitting/new','InstallationFlatKnitting::create', ['as' => 'installation.flatknitting.add']);
+$routes->match(['get', 'post'], 'installation/circularknitting/new','InstallationCircularKnitting::create', ['as' => 'installation.circularknitting.add']);
+$routes->match(['get', 'post'], 'installation/embroidery/new','InstallationEmbroidery::create', ['as' => 'installation.embroidery.add']);
+
+
 $routes->get('supplier', 'Supplier::index', ['as' => 'supplier.list']);
 $routes->match(['get', 'post'], 'supplier/create', 'Supplier::create', ['as' => 'supplier.add']);
 $routes->match(['get', 'post'], 'supplier/(:num)/edit', 'Supplier::update/$1', ['as' => 'supplier.edit']);
@@ -119,10 +189,6 @@ $routes->group('dashboard', static function ($routes) {
     $routes->get('engineer', 'Dashboard::engineer', ['as' => 'dashboard.engineer']);
 });
  
-$routes->get('customer/(:num)/document/list', 'Document::index/$1', ['as' => 'customer.document.list']);
-$routes->match(['get', 'post'], 'customer/(:num)/document/create', 'Document::create/$1', ['as' => 'customer.document.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/document/(:num)/edit', 'Document::edit/$1/$2', ['as' => 'customer.document.edit']);
-$routes->match(['get', 'post'], 'customer/(:num)/document/(:num)/delete', 'Document::delete/$1/$2', ['as' => 'customer.document.delete']);
 
 $routes->get('embroidery', 'Embroidery::index/$1', ['as' => 'embroidery.list']);
 $routes->match(['get', 'post'], 'embroidery/create', 'Embroidery::create/$1', ['as' => 'embroidery.add']);
@@ -134,58 +200,21 @@ $routes->match(['get', 'post'], 'embroidery-installation/create', 'EmbroideryIns
 $routes->match(['get', 'post'], 'embroidery-installation/(:num)/edit', 'EmbroideryInstallation::edit/$1/$2', ['as' => 'embroideryinstallation.edit']);
 $routes->match(['get', 'post'], 'embroidery-installation/(:num)/delete', 'EmbroideryInstallation::delete/$1/$2', ['as' => 'embroideryinstallation.delete']);
 
-
-// $routes->get('enquiry', 'Enquiry::index', ['as' => 'enquiry.list']);
-// $routes->post('enquiry/new', 'Enquiry::create', ['as' => 'enquiry.add']);
+// $routes->get('enquiry/list', 'Enquiry::customerEnquiryList', ['as' => 'enquiry.list']);
+// $routes->get('customer/(:num)/enquiry/list', 'Enquiry::customerEnquiryList/$1', ['as' => 'customer.enquiry.list']);
+// $routes->match(['get', 'post'], 'enquiry/create', 'Enquiry::create', ['as' => 'enquiry.add']);
+// $routes->match(['get', 'post'], 'customer/(:num)/enquiry/create', 'Enquiry::create/$1', ['as' => 'customer.enquiry.add']);
+// $routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/edit', 'Enquiry::update/$1/$2', ['as' => 'customer.enquiry.edit']);
+// $routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/delete', 'Enquiry::delete/$1/$2', ['as' => 'customer.enquiry.delete']);
+// $routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/detail', 'Enquiry::detail/$1/$2', ['as' => 'customer.enquiry.detail']);
 // $routes->match(['get', 'post'], 'enquiry/(:num)/edit', 'Enquiry::edit/$1', ['as' => 'enquiry.edit']);
 // $routes->match(['get', 'post'], 'enquiry/(:num)/delete', 'Enquiry::delete/$1', ['as' => 'enquiry.delete']);
 
-$routes->get('customer/(:num)/call/list', 'Call::customer_call/$1', ['as' => 'customer.call.list']);
-$routes->match(['get', 'post'], 'customer/(:num)/call/create', 'Call::create/$1', ['as' => 'customer.call.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/call/allocation', 'Call::allocation/$1', ['as' => 'customer.allocation.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/call/allocate', 'Call::allocate/$1', ['as' => 'customer.allocate.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/call/(:num)/edit', 'Call::edit/$1/$2', ['as' => 'customer.call.edit']);
-$routes->match(['get', 'post'], 'customer/(:num)/call/(:num)/delete', 'Call::delete/$1', ['as' => 'customer.call.delete']);
-
-$routes->get('enquiry/list', 'Enquiry::index', ['as' => 'enquiry.list']);
-$routes->get('customer/(:num)/enquiry/list', 'Enquiry::customerEnquiryList/$1', ['as' => 'customer.enquiry.list']);
-$routes->match(['get', 'post'], 'enquiry/create', 'Enquiry::create', ['as' => 'enquiry.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/enquiry/create', 'Enquiry::create/$1', ['as' => 'customer.enquiry.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/edit', 'Enquiry::edit/$1/$2', ['as' => 'customer.enquiry.edit']);
-$routes->match(['get', 'post'], 'customer/(:num)/enquiry/(:num)/delete', 'Enquiry::delete/$1/$2', ['as' => 'customer.enquiry.delete']);
-$routes->match(['get', 'post'], 'enquiry/(:num)/edit', 'Enquiry::edit/$1', ['as' => 'enquiry.edit']);
-$routes->match(['get', 'post'], 'enquiry/(:num)/delete', 'Enquiry::delete/$1', ['as' => 'enquiry.delete']);
 
 
-$routes->get('invoice/list', 'Invoice::index/$1', ['as' => 'invoice.list']);
-$routes->get('customer/(:num)/invoice/list', 'Invoice::index/$1', ['as' => 'customer.invoice.list']);
-$routes->match(['get', 'post'], 'invoice/create', 'Invoice::create', ['as' => 'invoice.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/invoice/create', 'Invoice::customerInvoice/$1', ['as' => 'customer.invoice.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/invoice/(:num)/edit', 'Invoice::edit/$1/$2', ['as' => 'customer.invoice.edit']);
-$routes->match(['get', 'post'], 'customer/(:num)/invoice/(:num)/delete', 'Invoice::delete/$1/$2', ['as' => 'customer.invoice.delete']);
-
-$routes->get('quotation/list', 'Quotation::index/$1', ['as' => 'quotation.list']);
-$routes->match(['get', 'post'], 'quotation/create', 'Quotation::create', ['as' => 'quotation.add']);
-$routes->get('customer/(:num)/quotation/list', 'Quotation::index/$1', ['as' => 'customer.quotation.list']);
-$routes->match(['get', 'post'], 'customer/(:num)/quotation/create', 'Quotation::create/$1', ['as' => 'customer.quotation.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/quotation/(:num)/edit', 'Quotation::edit/$1/$2', ['as' => 'customer.quotation.edit']);
-$routes->match(['get', 'post'], 'customer/(:num)/quotation/(:num)/delete', 'Quotation::delete/$1/$2', ['as' => 'customer.quotation.delete']);
-
-$routes->get('sales-order/list', 'SalesOrder::index/$1', ['as' => 'salesorder.list']);
-$routes->match(['get', 'post'], 'sales-order/create', 'SalesOrder::create', ['as' => 'salesorder.add']);
-$routes->get('customer/(:num)/sales-order/list', 'SalesOrder::index/$1', ['as' => 'customer.salesorder.list']);
-$routes->match(['get', 'post'], 'customer/(:num)/sales-order/create', 'SalesOrder::create/$1', ['as' => 'customer.salesorder.add']);
-$routes->match(['get', 'post'], 'customer/(:num)/sales-order/(:num)/edit', 'SalesOrder::edit/$1/$2', ['as' => 'customer.salesorder.edit']);
-$routes->match(['get', 'post'], 'customer/(:num)/sales-order/(:num)/delete', 'SalesOrder::delete/$1/$2', ['as' => 'customer.salesorder.delete']);
 
 
-$routes->group('customer', static function ($routes) {
-    $routes->get('/', 'Customer::index', ['as' => 'customer.list']);
-    $routes->match(['get', 'post'], 'new', 'Customer::create', ['as' => 'customer.add']);
-    $routes->match(['get', 'post'], '(:num)/edit', 'Customer::edit/$1', ['as' => 'customer.edit']);
-    $routes->match(['get', 'post'], '(:num)/delete', 'Customer::delete/$1', ['as' => 'customer.delete']);
-    $routes->get('(:num)/detail', 'Customer::detail/$1', ['as' => 'customer.detail']);
-});
+
 
 $routes->match(['get', 'post'], 'auth/login', 'Auth::login', ['as' => 'login']);
 $routes->match(['get', 'post'], 'auth/logout', 'Auth::logout', ['as' => 'logout']);

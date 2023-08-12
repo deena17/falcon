@@ -13,7 +13,7 @@
 <?php $validation = \Config\Services::validation(); ?>
 <div class="card card-outline card-primary">
     <div class="card-header">
-        <h5 class="card-title"><strong>New Contact</strong></h5>
+        <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
         <a href="<?= url_to('customer.contact.list', $customer->id); ?>" class="btn btn-info float-right">
             <i class="fa fa-arrow-left mr-2"></i>Back
         </a>
@@ -88,9 +88,9 @@
             <fieldset class="form-group row">
                 <legend class="col-form-label col-sm-3 float-sm-left pt-0">Primary Contact?</legend>
                 <div class="col-sm-9">
-                    <input type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                    <input type="radio" name="is_primary" id="gridRadios1" value="0" checked>
                     No
-                    <input class="ml-3" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                    <input class="ml-3" type="radio" name="is_primary" id="gridRadios2" value="1">
                     Yes
                 </div>
             </fieldset>

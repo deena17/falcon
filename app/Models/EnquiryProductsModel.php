@@ -20,7 +20,8 @@ class EnquiryProductsModel extends Model
         'product_model_id',
         'quantity',
         'description',
-        'specification'
+        'specification',
+        'display'
     ];
 
     // Dates

@@ -12,7 +12,7 @@
                 <div class="card-header p-3 text-center">
                     <h5><?= $customer->customer_name; ?></h5>
                     <p>
-                        <?= $customer->contact_street; ?><br>
+                        <?php if(!empty($customer->contact_street)): echo $customer->contact_street; else: echo "XXXXXXXXXX"; endif ?><br>
                         <?= $customer->contact_city; ?>,
                         <?= $customer->contact_district; ?><br />
                         <i class="fa fa-envelope mr-2"></i><?= $customer->contact_email; ?><br />
@@ -35,24 +35,51 @@
                             </a>
                         </li>
                         <?php endif; ?>            
-                        <li class="list-group-item"><a href="<?= url_to('customer.document.list', $customer->id); ?>"><i
-                                    class="fa fa-file mr-2"></i>Documents</a></li>
-                        <li class="list-group-item"><a href="<?= url_to('customer.enquiry.list', $customer->id); ?>"><i
-                                    class="fa fa-question mr-2"></i>Enquiry</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i
-                                    class="fa fa-tools mr-2"></i>Installation</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i
-                                    class="fa fa-file mr-2"></i>Invoice</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i
-                                    class="fa fa-file mr-2"></i>Notes</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i
-                                    class="fa fa-file mr-2"></i>Payments</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i
-                                    class="fa fa-file mr-2"></i>Quotations</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i class="fa fa-file mr-2"></i>Sales
-                                Order</a></li>
-                        <li class="list-group-item"><a href="<?= base_url(); ?>"><i
-                                    class="fa fa-file mr-2"></i>Service</a></li>
+                        <li class="list-group-item">
+                            <a href="<?= url_to('customer.document.list', $customer->id); ?>">
+                                <i class="fa fa-file mr-2"></i>Documents
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= url_to('customer.enquiry.list', $customer->id); ?>">
+                                <i class="fa fa-question mr-2"></i>Enquiry
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= base_url(); ?>">
+                                <i class="fa fa-tools mr-2"></i>Installation
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= url_to('customer.invoice.list', $customer->id);; ?>">
+                                <i class="fa fa-file mr-2"></i>Invoice
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= base_url(); ?>">
+                                <i class="fa fa-file mr-2"></i>Notes
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= base_url(); ?>">
+                                <i class="fa fa-file mr-2"></i>Payments
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= url_to('customer.quotation.list', $customer->id);; ?>">
+                                <i class="fa fa-file mr-2"></i>Quotations
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= url_to('customer.salesorder.list', $customer->id);; ?>">
+                                <i class="fa fa-file mr-2"></i>Sales Order
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="<?= base_url(); ?>">
+                                <i class="fa fa-file mr-2"></i>Service
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

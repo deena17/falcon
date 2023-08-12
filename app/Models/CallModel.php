@@ -14,7 +14,7 @@ class CallModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['customer_id', 'call_date', 'call_time', 'description', 'call_type', 'related'];
+    protected $allowedFields    = ['customer_id', 'call_date', 'call_time', 'description', 'call_type_id', 'related'];
 
     // Dates
     protected $useTimestamps = false;
@@ -22,36 +22,6 @@ class CallModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
-
-    // Validation
-    protected $validationRules      = [
-        'customer_id' => 'required',
-        'call_date' => 'required',
-        'call_time' => 'required',
-        'description' => 'required',
-        'call_type' => 'required',
-        'related' => 'related'
-    ];
-    protected $validationMessages   = [
-        'cusotmer_id' => [
-            'required' => 'Customer name required'
-        ],
-        'call_date' => [
-            'required' => 'Call date required'
-        ],
-        'call_time' => [
-            'required' => 'Call time required'
-        ],
-        'description' => [
-            'required' => 'Description required'
-        ],
-        'call_type' => [
-            'required' => 'Call type required'
-        ],
-        'related' => [
-            'required' => 'Call related required'
-        ]
-    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -66,14 +36,14 @@ class CallModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    // public function findAll($limit=0, $offset=0){
-    //     $result = array();
-    //     $calls = $this->get()->getResult();
-    //     foreach($calls as $c):
-    //         $result['call'] = $this->where('id', $c->id)->get()->getResult();
-    //         $result['customer'] => 
-    //     endforeach;
-    //     return $calls;
-    // }
+    public function get_calls(){
+        $result = $this->select('call_number, call_date, c.customer_name, complaint_nature')
+                ->join('customer as c', "service_call.customer_id=service_call.id")
+                ->get()->getResult();
+    }
+
+    public function customer_calls($customer){
+        
+    }
 
 }

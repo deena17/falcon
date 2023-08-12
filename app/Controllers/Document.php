@@ -29,41 +29,16 @@ class Document extends BaseController
     }
     public function index($customer)
     {
-        $this->data['pageTitle'] = 'Document List';
+        $this->data['page_title'] = 'Document List';
         $this->data['customer'] = $this->customer->where('id', $customer)->first();
         $this->data['documents'] = $this->model->where('customer_id', $customer)->findAll();
         return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'list', $this->data);
     }
 
-    public function show($id = null)
-    {
-        $model = new CallModel();
-        $data = $model->find($id);
-        if ($data) {
-            $response = [
-                'status' => 200,
-                'error' => false,
-                'message' => 'Call details retrived successfully',
-                'data' => $data
-            ];
-        } else {
-            $response = [
-                'status' => 404,
-                'error' => true,
-                'message' => 'Call details not found with id=' . $id,
-            ];
-        }
-        return $this->respond($response);
-    }
-
-    /**
-     * Create a new resource object, from "posted" parameters
-     *
-     * @return mixed
-     */
+    
     public function create($customer)
     {
-        $this->data['pageTitle'] = 'Add new document';
+        $this->data['page_title'] = 'Add document';
         $this->data['customer'] = $this->customer->where('id', $customer)->first();
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'create', $this->data);

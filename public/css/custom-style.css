@@ -37,3 +37,9 @@ body {
 .form-control{
     border-radius: 0px !important;
 }
+
+.requiredField::after{
+    content: '*'!important;
+    margin-left:5px;
+    color: rgb(175, 6, 6) !important;
+}

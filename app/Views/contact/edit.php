@@ -17,7 +17,7 @@ print_r($validation->getErrors());
 <?= $this->section("main") ?>
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title"><strong>Edit Contact</strong></h5>
+        <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
         <a href="<?= url_to('customer.contact.list', $customer->id); ?>" class="btn btn-info float-right">
             <i class="fa fa-arrow-left mr-2"></i>Back
         </a>
@@ -51,7 +51,7 @@ print_r($validation->getErrors());
             <div class="form-group row">
                 <label for="contact-alternate" class="col-sm-3 col-form-label">Alternate Number</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="contact-alternate" name="contact_alternate">
+                    <input type="text" class="form-control" id="contact-alternate" name="contact_alternate" value="<?= $contact->alternate_number; ?>" />
                 </div>
             </div>
             <div class="form-group row">
@@ -78,9 +78,9 @@ print_r($validation->getErrors());
             <fieldset class="form-group row">
                 <legend class="col-form-label col-sm-3 float-sm-left pt-0">Primary Contact?</legend>
                 <div class="col-sm-9">
-                    <input type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                    <input type="radio" name="gridRadios" id="gridRadios1" value="0" <?= $contact->is_primary == 0 ? "checked" : null ?>>
                     No
-                    <input class="ml-3" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                    <input class="ml-3" type="radio" name="gridRadios" id="gridRadios2" value="1" <?= $contact->is_primary == 1 ? "checked" : null ?>>
                     Yes
                 </div>
             </fieldset>

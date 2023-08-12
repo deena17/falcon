@@ -23,7 +23,8 @@ class BillingAddressModel extends Model
         'pincode',
         'iec_number',
         'pan_number',
-        'gst_number'
+        'gst_number',
+        'display'
 
     ];
 
