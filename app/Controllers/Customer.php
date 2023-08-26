@@ -28,21 +28,15 @@ class Customer extends BaseController
         $this->ctype = new \App\Models\CustomerTypeModel();
         $this->customer = new \App\Models\CustomerModel();
         $this->call = new \App\Models\ServiceCallModel();
+        $this->enquiry = new \App\Models\EnquiryModel();
         $this->engineer = $this->ionAuth->user()->row();
         $this->session = \Config\Services::session();
     }
 
     public function index()
     { 
-        $this->data['page_title'] = 'Customer List';
-        if (! $this->ionAuth->loggedIn() || ! $this->ionAuth->isAdmin())
-		{
-			return redirect()->to('/auth/login');
-		}
-        if(!$this->ionAuth->checkPermission('view_customer')){
-            return view('auth/403', ['page_title' => 'Access Denined']);
-        }
         $this->data['message'] = null;
+        $this->data['page_title'] = 'Customer List';
         $name = $this->request->getVar('customer_name');
         if ($name) {
             $this->data['customers'] = $this->customer->like('customer_name', $name)->find();
@@ -56,15 +50,18 @@ class Customer extends BaseController
         return view($this->viewsFolder . '/' . 'list', $this->data);
     }
 
-    public function create()
+    public function create($enquiry=null)
     {
-        if(!$this->ionAuth->checkPermission('add_customer')){
-            return view('auth/403', ['page_title' => 'Access Denined']);
-        }
+        // if(!$this->ionAuth->checkPermission('add_customer')){
+        //     return view('auth/403', ['page_title' => 'Access Denined']);
+        // }
         $this->data['page_title'] = 'New customer';
         $this->data['department'] = $this->department->findAll();
         $this->data['customer_type'] = $this->ctype->findAll();
-        $this->data['engineer'] = $this->ionAuth->user()->result();
+        $this->data['engineer'] = $this->ionAuth->users()->result();
+        if(!empty($enquiry)){
+            $this->data['enquiry'] = $this->enquiry->where('id', $enquiry)->first();
+        }
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             return view(
                 $this->viewsFolder . '/' . 'add',
@@ -267,5 +264,21 @@ class Customer extends BaseController
         $this->data['shipping'] = $this->shipping->where(['customer_id'=>$id, 'display'=>'Y'])->findAll();
         $this->data['calls'] = count($this->call->customer_calls($id));
         return view($this->viewsFolder . '/' . 'detail', $this->data);
+    }
+
+
+    public function confirm_list(){
+        $this->data['page_title'] = 'Confirm List';
+        $this->data['customers'] = $this->enquiry->where([
+            'display' => 'Y',
+            'status'  => 1,
+            'customer_type' => 0
+        ])->find();
+        return view($this->viewsFolder.'/'.'confirm_list', $this->data);
+    }
+
+    public function get_customer($id){
+        header('Content-Type application/json; charset=UTF-8');
+        return json_encode($this->customer->find($id));
     }
 }

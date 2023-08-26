@@ -19,6 +19,28 @@
     <div class="card-body">
         <form method="post" action="">
             <div class="row">
+                <?php if(!isset($customer)): ?>
+                <div class="col-md-4">
+                    <fieldset class="form-group row mt-4">
+                        <legend class="col-form-label col-sm-6 float-sm-left pt-0"><strong>Existing Customer?</strong></legend>
+                        <div class="col-sm-6">
+                            <input type="radio" name="is_existing" id="existing-1" value="0" checked> No
+                            <input class="ml-3" type="radio" name="is_existing" id="existing-2" value="1"> Yes
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group" style="display:none" id="customer-dropdown">
+                        <label for="customer">Select Customer</label>
+                        <select name="customer" id="customer" class="form-control select2">
+                            <option value="0">Select Customer</option>
+                            <?php foreach($customers as $c): ?>
+                            <option value="<?= $c->id; ?>"><?= $c->customer_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="enquiry-number">Enquiry Number</label>
@@ -224,6 +246,7 @@
                             id="duration" 
                             name="duration" 
                             value="<?= set_value('duration'); ?>" 
+                            oninput="duration()"
                         />
                     </div>
                 </div>
@@ -326,6 +349,50 @@
 
 
     $('document').ready(function() {
+
+        $("#customer").change(function(){
+            var customer = parseInt($(this).val());
+            if(customer > 0){
+                $.ajax({
+                    type:'GET',
+                    url:`<?= base_url(); ?>/customer/${customer}/get-customer`,
+                    data:{'customer':customer},
+                    success:function(response){
+                        var options='';
+                        data = JSON.parse(response);
+                        $("#customer-name").val(data.customer_name).prop('readonly', 'readonly');
+                        $("#contact-number").val(data.contact_number).prop('readonly', 'readonly');
+                        $("#contact-landline").val(data.contact_landline).prop('readonly', 'readonly');
+                        $("#street").val(data.contact_street).prop('readonly', 'readonly');
+                        $("#city").val(data.contact_city).prop('readonly', 'readonly');
+                        $("#district").val(data.contact_district).prop('readonly', 'readonly');
+                        $("#state").val(data.contact_state).prop('readonly', 'readonly');
+                        $("#pincode").val(data.contact_pincode).prop('readonly', 'readonly');
+                        $("#area").val(data.contact_area).prop('readonly', 'readonly');
+                    }
+                }); 
+            }
+            else{
+                $("#customer-name").val('').prop('readonly', '');
+                $("#contact-number").val('').prop('readonly', '');
+                $("#contact-landline").val('').prop('readonly', '');
+                $("#street").val('').prop('readonly', '');
+                $("#city").val('').prop('readonly', '');
+                $("#district").val('').prop('readonly', '');
+                $("#state").val('').prop('readonly', '');
+                $("#pincode").val('').prop('readonly', '');
+                $("#area").val('').prop('readonly', '');
+            }
+        });
+
+        $('input[name=is_existing]').change(function(){
+            var value = parseInt($('input[name=is_existing]:checked').val());
+            if(value == 1){
+                $("#customer-dropdown").show();
+                return;
+            }
+            $("#customer-dropdown").hide();
+        });
         
         $('#add-new-button').click(function(e){
             e.preventDefault();
@@ -360,6 +427,26 @@
                         </tr>`;
             $("#product-table").append(row);
             $("#index").val(index);
+        });
+
+        $("#duration").focus(function(){
+            var timeFrom = $('#from-time').data('timepicker');
+            var timeTO = $('#to-time').data('timepicker');
+            debugger;
+            var timeFromHH = (timeFrom.hour == 12 && timeFrom.meridian == "AM") ? 0 :
+                (timeFrom.hour != 12 && timeFrom.meridian == "PM") ? timeFrom.hour + 12 :
+                timeFrom.hour;
+            var timeTOHH = (timeTO.hour == 12 && timeTO.meridian == "AM") ? 0 :
+                (timeTO.hour != 12 && timeTO.meridian == "PM") ? timeTO.hour + 12 :
+                timeTO.hour;
+
+            var timeFromMM = timeFromHH * 60 + timeFrom.minute;
+            var timeTOMM = timeTOHH * 60 + timeTO.minute;
+
+            var diffMM = Math.abs(timeTOMM - timeFromMM);
+            var diff = Math.floor(diffMM / 60) + "hrs " + (diffMM % 60) + "mins";
+            
+            $("#duration").text(diff);
         });
     });
 
@@ -400,6 +487,10 @@
             //delete last row
             table.deleteRow(rowCount-1);
         }
+    }
+
+    function duration() {
+        
     }
     </script>
 <?= $this->endSection(); ?>

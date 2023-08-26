@@ -4,8 +4,12 @@
 <ol class="breadcrumb float-sm-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Customer</li>
-    <li class="breadcrumb-item active">New</li>
+    <li class="breadcrumb-item active">Confirm</li>
 </ol>
+<?= $this->endSection(); ?>
+
+<?= $this->section('title'); ?>
+Confirm Customer
 <?= $this->endSection(); ?>
 
 <?php $validation = \Config\Services::validation(); ?>
@@ -13,11 +17,11 @@
 <?= $this->section('content'); ?>
 <div class="card card-outline card-success">
     <div class="card-header">
-        <h5 class="card-title"><strong>New Customer</strong></h5>
-        <a href="<?= url_to('customer.list'); ?>" class="btn btn-primary btn-sm float-sm-right"><i class="fa fa-arrow-left"></i> Back</a>
+        <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
+        <a href="<?= url_to('customer.confirmlist'); ?>" class="btn btn-primary btn-sm float-sm-right"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
     <div class="card-body">
-        <form action="" method="POST" accept-charset="utf-8">
+        <form action="<?= url_to('customer.add'); ?>" method="POST" accept-charset="utf-8">
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-outline card-primary">
@@ -31,7 +35,13 @@
                                             name="department[]" style="width: 100%;"
                                             data-dropdown-css-class="select2-purple" value="">
                                             <?php foreach ($department as $d) : ?>
-                                            <option value="<?= $d->id; ?>"><?= $d->name; ?></option>
+                                                <?php 
+                                                    $selected = null;
+                                                    if($d->id == $enquiry->department_id){
+                                                        $selected="selected='selected'";
+                                                    }    
+                                                ?>
+                                            <option value="<?= $d->id; ?>" <?= $selected; ?>><?= $d->name; ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -51,13 +61,10 @@
                             <div class="row form-group">
                                 <label for="customer-name" class="col-sm-3 col-form-label">Customer Name</label>
                                 <div class="col-sm-9">
-                                    <input 
-                                        type="text" 
-                                        name="customer_name" 
-                                        id="customer-name"
-                                        value="<?= set_value('customer_name'); ?>"
-                                        class=" form-control <?php if ($validation->getError('customer_name')) : ?>is-invalid<?php endif ?>" 
-                                    />
+                                    <input type="text" name="customer_name" id="customer-name"
+                                        value="<?= set_value('customer_name', $enquiry->customer_name); ?>"
+                                        class=" form-control
+                                        <?php if ($validation->getError('customer_name')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('customer_name')) : ?>
                                     <div class=" invalid-feedback">
                                         <?= $validation->getError('customer_name') ?>
@@ -70,7 +77,7 @@
                                     Number</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_number" id="contact-number"
-                                        value="<?= set_value('contact_number'); ?>"
+                                        value="<?= set_value('contact_number', $enquiry->contact_number); ?>"
                                         class=" form-control
                                         <?php if ($validation->getError('contact_number')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_number')) : ?>
@@ -84,7 +91,7 @@
                                 <label for="customer-contact-landline" class="col-sm-3">Landline Number</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_landline" id="contact-landline"
-                                        value="<?= set_value('contact_landline'); ?>"
+                                        value="<?= set_value('contact_landline', $enquiry->contact_landline); ?>"
                                         class=" form-control
                                         <?php if ($validation->getError('contact_landline')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_landline')) : ?>
@@ -112,7 +119,7 @@
                                 <label for="contact-street" class="col-sm-3 col-form-label">Street</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_street" id="contact-street"
-                                        value="<?= set_value('contact_street'); ?>"
+                                        value="<?= set_value('contact_street', $enquiry->street); ?>"
                                         class="form-control <?php if ($validation->getError('contact_street')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_street')) : ?>
                                     <div class=" invalid-feedback">
@@ -125,7 +132,7 @@
                                 <label for="contact-city" class="col-sm-3 col-form-label">City</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_city" id="contact-city"
-                                        value="<?= set_value('contact_city'); ?>"
+                                        value="<?= set_value('contact_city', $enquiry->city); ?>"
                                         class="form-control <?php if ($validation->getError('contact_city')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_city')) : ?>
                                     <div class=" invalid-feedback">
@@ -138,7 +145,7 @@
                                 <label for="contact-district" class="col-sm-3 col-form-label">District</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_district" id="contact-district"
-                                        value="<?= set_value('contact_district'); ?>"
+                                        value="<?= set_value('contact_district', $enquiry->district); ?>"
                                         class="form-control <?php if ($validation->getError('contact_district')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_district')) : ?>
                                     <div class=" invalid-feedback">
@@ -151,7 +158,7 @@
                                 <label for="contact-state" class="col-sm-3 col-form-label">State</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_state" id="contact-state"
-                                        value="<?= set_value('contact_state'); ?>"
+                                        value="<?= set_value('contact_state', $enquiry->state); ?>"
                                         class="form-control <?php if ($validation->getError('contact_state')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_state')) : ?>
                                     <div class=" invalid-feedback">
@@ -164,7 +171,7 @@
                                 <label for="contact-pincode" class="col-sm-3 col-form-label">Pincode</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="contact_pincode" id="contact-pincode"
-                                        value="<?= set_value('contact_pincode'); ?>"
+                                        value="<?= set_value('contact_pincode', $enquiry->pincode); ?>"
                                         class="form-control <?php if ($validation->getError('contact_pincode')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_pincode')) : ?>
                                     <div class=" invalid-feedback">
@@ -176,7 +183,11 @@
                             <div class="row form-group">
                                 <label for="contact-area" class="col-sm-3 col-form-label">Area</label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="contact_area" id="contact-area" value="<?= set_value('contact_area'); ?>"
+                                    <input 
+                                        type="text" 
+                                        name="contact_area" 
+                                        id="contact-area" 
+                                        value="<?= set_value('contact_area', $enquiry->area); ?>"
                                         class="form-control <?php if ($validation->getError('contact_area')) : ?>is-invalid<?php endif ?>" />
                                     <?php if ($validation->getError('contact_area')) : ?>
                                     <div class=" invalid-feedback">
@@ -405,7 +416,7 @@
         </form>
     </div>
 </div>
-<?php $uri = service('uri'); ?>
+
 
 <?= $this->endSection(); ?>
 
@@ -414,29 +425,6 @@
 <?= $this->section('scripts'); ?>
 <script>
 $(document).ready(function() {
-
-    var enquiry = <?= $uri->getSegment(2); ?>;
-    $.ajax({
-        type:'GET',
-        url:`<?= base_url(); ?>/enquiry/${enquiry}/get-enquiry`,
-        data:{'enquiry':enquiry},
-        success:function(response){
-            console.log(response);
-            var options='';
-            data = JSON.parse(response);
-            $("#customer-name").val(data.customer_name).prop('readonly', 'readonly');
-            $("#contact-number").val(data.contact_number).prop('readonly', 'readonly');
-            $("#contact-landline").val(data.contact_landline).prop('readonly', 'readonly');
-            $("#contact-street").val(data.street).prop('readonly', 'readonly');
-            $("#contact-city").val(data.city).prop('readonly', 'readonly');
-            $("#contact-district").val(data.district).prop('readonly', 'readonly');
-            $("#contact-state").val(data.state).prop('readonly', 'readonly');
-            $("#contact-pincode").val(data.pincode).prop('readonly', 'readonly');
-            $("#contact-area").val(data.area).prop('readonly', 'readonly');
-            $("#customer-department").val(data.department_id).change();
-        }
-    });
-
     var customer_type = $("#customer_type").val();
     if (customer_type === 0) {
         alert("Please select customer type");

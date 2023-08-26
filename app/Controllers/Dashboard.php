@@ -25,12 +25,12 @@ class Dashboard extends BaseController
 
 	public function admin()
 	{
-		$this->data['pageTitle'] = 'Dashboard';
+		$this->data['page_title'] = 'Dashboard';
 		return view($this->viewsFiles.'/'.'admin');
 	}
 
 	public function engineer(){
-		$this->data['pageTitle'] = 'Dashboard';
+		$this->data['page_title'] = 'Dashboard';
 		return view('dashboard/engineer', $this->data);
 	}
 

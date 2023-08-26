@@ -39,15 +39,11 @@ class Filters extends BaseConfig
      */
     public $globals = [
         'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
-            'cors'
+            'auth' => ['except' => 'auth/login'],
+            'admin'
         ],
         'after' => [
             'toolbar',
-            // 'honeypot',
-            // 'secureheaders',
         ],
     ];
 

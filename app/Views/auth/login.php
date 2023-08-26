@@ -1,8 +1,10 @@
 <?= $this->extend('layout/auth'); ?>
 <?= $this->section('content'); ?>
+<?php helper('html'); ?>
 <style>
     body {
-        background-image:url("https://goldenfalconinternational.com/goldenfalcon/1images/slider/embroidery-banner2.jpg")
+        /* background-image:url("<?= base_url(); ?>/public/images/embroidery-banner2.jpg") */
+        background: #1f618d;
     }
 
     .login-container .row {
@@ -67,7 +69,8 @@
                 <?php endif; ?>
                 <div class="card">
                     <div class="card-header">
-                        <img src="https://crm.goldenfalconinternational.com/static/img/gfi.jpg" />
+                        <?= img('public/images/gfi.jpg');?>
+                        <!-- <img src="https://crm.goldenfalconinternational.com/static/img/gfi.jpg" /> -->
                     </div>
                     <div class="card-body login-card-body">
                         <p><?php echo lang('Auth.login_subheading'); ?></p>

@@ -36,6 +36,112 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="<?= url_to('customer.list'); ?>" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>Customer <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= url_to('customer.add'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-plus-circle"></i>
+                                <p>Add Customer</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= url_to('customer.list'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Customer List</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= url_to('customer.confirmlist'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-check"></i>
+                                <p>Confirm Customer</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-money-check-alt"></i>
+                        <p>Sales Enquiry <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= url_to('enquiry.add'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-plus-circle"></i>
+                                <p>New Enquiry</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= url_to('enquiry.list'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Enquiry List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>Quotation <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= url_to('quotation.add'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-plus-circle"></i>
+                                <p>New Quotation</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= url_to('quotation.list'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Quotation List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>Invoice <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= url_to('invoice.add'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-plus-circle"></i>
+                                <p>New Invoice</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= url_to('invoice.list'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Invoice List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>Sales Order<i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= url_to('salesorder.add'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-plus-circle"></i>
+                                <p>New Sales Order</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= url_to('salesorder.list'); ?>" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>Sales Order List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-list"></i>
                         <p>Masters <i class="right fas fa-angle-left"></i></p>
@@ -128,9 +234,9 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= url_to('customer.list'); ?>" class="nav-link">
+                    <a href="<?= url_to('user.list'); ?>" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
-                        <p>Customer</p>
+                        <p>User Management</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -203,6 +309,12 @@
                         <p>Service Call<i class="right fas fa-angle-left"></i></p>
                     </a>
                     <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= url_to('call.add');?>" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>New Service Call</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="<?= url_to('call.allocation');?>" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>

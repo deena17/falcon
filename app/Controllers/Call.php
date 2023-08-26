@@ -45,14 +45,17 @@ class Call extends \App\Controllers\BaseController
         return view($this->viewsFolder . '/' . 'list', $this->data);
     }
 
-    public function create($customer)
+    public function create($customer=null)
     {
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer)){
+            $this->data['customer'] = $this->customer->find($customer);
+        }
         $this->data['page_title'] = 'New Service Call';
+        $this->data['customers'] = $this->customer->findAll();
         $this->data['contacts'] = $this->contact->where('customer_id', $customer)->find();
         $this->data['callType'] = $this->type->findAll();
         $this->data['callRelated'] = $this->related->findAll();
-        $this->data['department'] = $this->department->getCustomerDepartments($customer);
+        $this->data['department'] = $this->department->findAll();
         $this->data['products'] = $this->product->findAll();
         $this->data['product_models'] = $this->productModel->findAll();
         $this->data['call_number'] = $this->call->generateCallNumber();
@@ -76,7 +79,7 @@ class Call extends \App\Controllers\BaseController
                 );
             }else{
                 $data = [
-                    'customer_id' => $customer,
+                    'customer_id' => isset($customer) ? $customer : $this->request->getPost('customer'),
                     'department_id' => $this->request->getPost('department'),
                     'call_number' => $this->request->getPost('call_number'),
                     'call_date' => date('Y-m-d', strtotime($this->request->getPost('call_date'))),
@@ -209,7 +212,7 @@ class Call extends \App\Controllers\BaseController
     {
         $this->data['page_title'] = 'Call Allocation';
         $this->data['call'] = $this->call->get_call_detail($call);
-        $this->data['engineer'] = $this->ionAuth->user()->result();
+        $this->data['engineer'] = $this->ionAuth->users()->result();
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'allocate', $this->data);
         }

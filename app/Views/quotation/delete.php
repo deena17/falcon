@@ -1,17 +1,17 @@
 <?= $this->extend("layout/customer") ?>
 
 <?= $this->section('breadcrumb'); ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb float-sm-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <?php if(isset($customer)): ?>
     <li class="breadcrumb-item">Customer</li>
-    <li class="breadcrumb-item">Invoice</li>
+    <?php endif; ?>
+    <li class="breadcrumb-item">Quotation</li>
     <li class="breadcrumb-item active">Delete</li>
 </ol>
 <?= $this->endSection(); ?>
 
 <?= $this->section("main") ?>
-<?php $validation = \Config\Services::validation(); ?>
-<?php print_r($validation->listErrors());?>
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -20,14 +20,14 @@
                 <div class="card-header">
                     <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
                     <div class="float-right">
-                        <a href="<?= url_to('customer.quotation.list', $customer->id) ?>" class="btn btn-info">
+                        <a href="<?= isset($customer) ? url_to('customer.quotation.list', $customer->id) : url_to('quotation.list') ?>" class="btn btn-info">
                             <i class="fa fa-arrow-left mr-1"></i>Back</a>
                     </div>
                 </div>
                 <div class="card-body">
                     <form action="" method="post">
                         <input type="hidden" name="id" value="<?= $quotation->id; ?>">
-                        <p>Are you sure want to delete quotation <strong><?= $quotation->quotation_number; ?></strong> of <?= $customer->customer_name; ?>?</p>
+                        <p>Are you sure want to delete quotation <strong><?= $quotation->quotation_number; ?></strong> of <?= $quotation->customer_name; ?>?</p>
                         <input type="submit" class="btn btn-danger" value="Yes! Delete">
                     </form>
                 </div>

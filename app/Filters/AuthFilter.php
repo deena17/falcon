@@ -24,52 +24,14 @@ class AuthFilter implements FilterInterface
      * @return mixed
      */
 
-    protected $request;
-
+   
     public function before(RequestInterface $request, $arguments = null)
     {
-        // $key = getenv('JWT_SECRET');
-        // $header = $request->header('Authorization');
-        // $token = null;
-        // if (!empty($header)) {
-        //     if (preg_match('/Bearer\s(\S+)/', $header, $matches)) {
-        //         $token = $matches[1];
-        //     }
-        // }
-        // if (is_null($token) || empty($token)) {
-        //     $response = service('response');
-        //     $response->setBody('Access denied');
-        //     $response->setStatusCode(401);
-        //     return $response;
-        // }
-        // $key = getenv('JWT_SECRET');
-        // $header = $request->getServer('HTTP_AUTHORIZATION');
-        // if (!$header) {
-        //     $response = service('response');
-        //     $response->setBody('Access token required');
-        //     $response->setStatusCode(401);
-        //     return $response;
-        // }
+        $ionAuth = new \App\Libraries\IonAuth();
 
-        // $token = explode(' ', $header)[1];
-        // try {
-        //     $decoded = JWT::decode($token, new Key($key, 'HS256'));
-        //     $userData = [
-        //         'id' => $decoded->user->id,
-        //         'name' => $decoded->user->name,
-        //         'active' => $decoded->user->active,
-        //         'groups' => $decoded->user->groups,
-        //         'permissions' => $decoded->user->permissions
-        //     ];
-        //     $session = \Config\Services::session();
-        //     $session->set('userdata', $userData);
-        // } catch (Exception $e) {
-        //     $response = service('response');
-        //     $response->setBody('Invalid access token');
-        //     $response->setStatusCode(401);
-        //     return $response;
-        // }
-
+        if(!$ionAuth->loggedIn()){
+            return redirect()->to('auth/login');
+        }
         
     }
 

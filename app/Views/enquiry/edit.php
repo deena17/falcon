@@ -4,7 +4,7 @@
 <ol class="breadcrumb float-sm-right">
     <li class="breadcrumb-item"><a href="#">Home</a></li>
     <li class="breadcrumb-item">Enquiry</li>
-    <li class="breadcrumb-item active">New</li>
+    <li class="breadcrumb-item active">Edit</li>
 </ol>
 <?= $this->endSection(); ?>
 
@@ -19,6 +19,28 @@
     <div class="card-body">
         <form method="post" action="">
             <div class="row">
+                <?php if(!isset($customer)): ?>
+                <div class="col-md-4">
+                    <fieldset class="form-group row mt-4">
+                        <legend class="col-form-label col-sm-6 float-sm-left pt-0"><strong>Existing Customer?</strong></legend>
+                        <div class="col-sm-6">
+                            <input type="radio" name="is_existing" id="existing-1" value="0" checked> No
+                            <input class="ml-3" type="radio" name="is_existing" id="existing-2" value="1"> Yes
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group" style="display:none" id="customer-dropdown">
+                        <label for="customer">Select Customer</label>
+                        <select name="customer" id="customer" class="form-control select2">
+                            <option value="0">Select Customer</option>
+                            <?php foreach($customers as $c): ?>
+                            <option value="<?= $c->id; ?>"><?= $c->customer_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="enquiry-number" class="requiredField">Enquiry Number</label>
@@ -78,8 +100,8 @@
                             class="form-control" 
                             id="customer-name" 
                             name="customer_name" 
-                            value="<?= set_value('customer_name', isset($customer) ? $customer->customer_name : ''); ?>" 
-                            readonly="<?php if(isset($customer)) echo "readonly" ?> "
+                            value="<?= set_value('customer_name', $enquiry->customer_name); ?>" 
+                            <?php if(isset($customer)) echo "readonly" ?>
                         />
                     </div>
                 </div>
@@ -91,8 +113,8 @@
                             class="form-control" 
                             id="contact-number" 
                             name="contact_number" 
-                            value="<?= set_value('contact_number', isset($customer) ? $customer->contact_number : ''); ?>" 
-                            readonly="<?php if(isset($customer)) echo "readonly" ?>"  
+                            value="<?= set_value('contact_number', $enquiry->contact_number); ?>" 
+                            <?php if(isset($customer)) echo "readonly" ?>
                         />
                     </div>
                 </div>
@@ -104,85 +126,85 @@
                             class="form-control" 
                             id="contact-landline" 
                             name="contact_landline" 
-                            value="<?= set_value('contact_landline', isset($customer) ? $customer->contact_landline : ''); ?>" 
-                            readonly="<?php if(isset($customer)) echo "readonly" ?>" 
+                            value="<?= set_value('contact_landline', $enquiry->contact_landline); ?>" 
+                            <?php if(isset($customer)) echo "readonly" ?>
                         />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="contact-street">Street</label>
+                        <label for="street">Street</label>
                         <input 
                             type="text" 
                             class="form-control" 
-                            id="contact-street" 
-                            name="contact_street" 
-                            value="<?= set_value('contact_street', isset($customer) ? $customer->contact_street : ''); ?>" 
+                            id="street" 
+                            name="street" 
+                            value="<?= set_value('street', $enquiry->street); ?>" 
                             <?php if(isset($customer)) echo "readonly" ?> 
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="contact-city">City</label>
+                        <label for="city">City</label>
                         <input 
                             type="text" 
                             class="form-control" 
-                            id="contact-city" 
-                            name="contact_city" 
-                            value="<?= set_value('contact_city', isset($customer) ? $customer->contact_city : ''); ?>" 
+                            id="city" 
+                            name="city" 
+                            value="<?= set_value('city', $enquiry->city); ?>" 
                             <?php if(isset($customer)) echo "readonly" ?>  
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="contact-district">District</label>
+                        <label for="district">District</label>
                         <input 
                             type="text" 
                             class="form-control" 
-                            id="contact-district" 
-                            name="contact_district" 
-                            value="<?= set_value('contact_district', isset($customer) ? $customer->contact_district : ''); ?>" 
+                            id="district" 
+                            name="district" 
+                            value="<?= set_value('district', $enquiry->district); ?>" 
                             <?php if(isset($customer)) echo "readonly" ?>  
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="contact-state">State</label>
+                        <label for="state">State</label>
                         <input 
                             type="text" 
                             class="form-control" 
-                            id="contact-state" 
-                            name="contact_state" 
-                            value="<?= set_value('contact_state', isset($customer) ? $customer->contact_state : ''); ?>" 
+                            id="state" 
+                            name="state" 
+                            value="<?= set_value('state', $enquiry->state); ?>" 
                             <?php if(isset($customer)) echo "readonly" ?>  
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="contact-pincode">Pincode</label>
+                        <label for="pincode">Pincode</label>
                         <input 
                             type="text" 
                             class="form-control" 
-                            id="contact-pincode" 
-                            name="contact_pincode" 
-                            value="<?= set_value('contact_pincode', isset($customer) ? $customer->contact_pincode : ''); ?>" 
+                            id="pincode" 
+                            name="pincode" 
+                            value="<?= set_value('pincode', $enquiry->pincode); ?>" 
                             <?php if(isset($customer)) echo "readonly" ?> 
                         />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="contact-area">Area</label>
+                        <label for="area">Area</label>
                         <input 
                             type="text" 
                             class="form-control" 
-                            id="contact-area" 
-                            name="contact_area" 
-                            value="<?= set_Value('contact_area', isset($customer) ? $customer->contact_area : ''); ?>" 
+                            id="area" 
+                            name="area" 
+                            value="<?= set_value('area', $enquiry->area); ?>" 
                             <?php if(isset($customer)) echo "readonly" ?> 
                         />
                     </div>
@@ -380,11 +402,57 @@
     <script>
     $('document').ready(function() {
 
-        $('#to-time').blur(function(){
-            var from_time = $("#from-time").val();
-            var to_time = $("#to-time").val();
-            var duration = ( new Date("1970-1-1 " + to_time) - new Date("1970-1-1 " + from_time))
-            alert(to_time);
+        $("#customer").change(function(){
+            var customer = parseInt($(this).val());
+            if(customer > 0){
+                $.ajax({
+                    type:'GET',
+                    url:`<?= base_url(); ?>/customer/${customer}/get-customer`,
+                    data:{'customer':customer},
+                    success:function(response){
+                        var options='';
+                        data = JSON.parse(response);
+                        $("#customer-name").val(data.customer_name).prop('readonly', 'readonly');
+                        $("#contact-number").val(data.contact_number).prop('readonly', 'readonly');
+                        $("#contact-landline").val(data.contact_landline).prop('readonly', 'readonly');
+                        $("#street").val(data.contact_street).prop('readonly', 'readonly');
+                        $("#city").val(data.contact_city).prop('readonly', 'readonly');
+                        $("#district").val(data.contact_district).prop('readonly', 'readonly');
+                        $("#state").val(data.contact_state).prop('readonly', 'readonly');
+                        $("#pincode").val(data.contact_pincode).prop('readonly', 'readonly');
+                        $("#area").val(data.contact_area).prop('readonly', 'readonly');
+                    }
+                }); 
+            }
+            else{
+                $("#customer-name").val('').prop('readonly', '');
+                $("#contact-number").val('').prop('readonly', '');
+                $("#contact-landline").val('').prop('readonly', '');
+                $("#street").val('').prop('readonly', '');
+                $("#city").val('').prop('readonly', '');
+                $("#district").val('').prop('readonly', '');
+                $("#state").val('').prop('readonly', '');
+                $("#pincode").val('').prop('readonly', '');
+                $("#area").val('').prop('readonly', '');
+            }
+        });
+
+        $('input[name=is_existing]').change(function(){
+            var value = parseInt($('input[name=is_existing]:checked').val());
+            if(value == 1){
+                $("#customer-dropdown").show();
+                return;
+            }
+            $("#customer-dropdown").hide();
+            $("#customer-name").prop('readonly', '');
+            $("#contact-number").prop('readonly', '');
+            $("#contact-landline").prop('readonly', '');
+            $("#contact-street").prop('readonly', '');
+            $("#contact-city").prop('readonly', '');
+            $("#contact-district").prop('readonly', '');
+            $("#contact-state").prop('readonly', '');
+            $("#contact-pincode").prop('readonly', '');
+            $("#contact-area").prop('readonly', '');
         });
 
         $('#add-new-button').click(function(e){
@@ -393,6 +461,7 @@
             var row = `<tr>
                             <td>
                                 <select name="product[]" id="product_${index}" class="form-control" onChange="updateModel(${index})">
+                                    <option value="0">Select Product</option>
                                     <?php foreach($products as $p): ?>
                                     <option value="<?= $p->id; ?>"><?= $p->name; ?></option>        
                                     <?php endforeach; ?>

@@ -16,37 +16,7 @@ class Enquiry extends ResourceController{
         return $this->failNotFound('No enquiries found');
     }
 
-    public function enquiryByParams(){
-        $customer = $this->request->getVar('customer');
-        $user = $this->request->getVar('user');
-        if($customer)
-            $data = $model->where('customer_id', $customer)->findAll();
-        if($user)
-            $data = $model->where('user', $user)->findAll();
-        if($data)
-            return $this->respond($data);
-        return $this->failNotFound('No enquiries found');
-    }
 
-    /**
-     * Return the properties of a resource object
-     *
-     * @return mixed
-     */
-    public function show($id = null)
-    {
-        $model = new EnquiryModel();
-        $data = $model->find($id);
-        if($data)
-            return $this->respond($data);
-        return $this->failNotFound('No enquiry found');
-    }
-
-    /**
-     * Create a new resource object, from "posted" parameters
-     *
-     * @return mixed
-     */
     public function create()
     {
         $model = new EnquiryModel();

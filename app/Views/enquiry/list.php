@@ -52,7 +52,7 @@
                             <td>
                                 <a href="<?= isset($customer) ? url_to('customer.enquiry.edit', $customer->id, $e->id) : url_to('enquiry.edit', $e->id); ?>" class="btn btn-sm btn-primary"><i
                                         class="fa fa-pencil-alt"></i> Edit</a>
-                                <a href="<?= isset($customer) ? url_to('customer.enquiry.detail', $customer->id, $e->id) : url_to('enquiry.edit', $e->id); ?>" class="btn btn-sm btn-info"><i
+                                <a href="<?= isset($customer) ? url_to('customer.enquiry.detail', $customer->id, $e->id) : url_to('enquiry.detail', $e->id); ?>" class="btn btn-sm btn-info"><i
                                         class="fa fa-pencil-alt"></i> View</a>
                                 <a href="<?= isset($customer) ? url_to('customer.enquiry.delete', $customer->id, $e->id) : url_to('enquiry.delete', $e->id); ?>" class="btn btn-sm btn-danger"><i
                                         class="fa fa-trash"></i> Delete</a>

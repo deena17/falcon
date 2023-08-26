@@ -20,13 +20,26 @@
                 <div class="card-header">
                     <h5 class="card-title"><strong><?= $page_title; ?></strong></h5>
                     <div class="float-right">
-                        <a href="<?= url_to('customer.call.list', $customer->id) ?>" class="btn btn-info">
+                        <a href="<?= isset($customer) ? url_to('customer.call.list', $customer->id) : url_to('call.list'); ?>" class="btn btn-info">
                             <i class="fa fa-arrow-left mr-1"></i>Back</a>
                     </div>
                 </div>
                 <div class="card-body">
                     <form action="" method="post">
                         <div class="row">
+                            <?php if(!isset($customer)): ?>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="customer">Select Customer</label>
+                                    <select name="customer" id="customer" class="form-control select2">
+                                        <option value="0">Select Customer</option>
+                                        <?php foreach($customers as $c): ?>
+                                        <option value="<?= $c->id; ?>"><?= $c->customer_name; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="id_department" class="requiredField">Department</label>

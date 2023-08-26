@@ -17,10 +17,12 @@ class Product extends BaseController
 
     public function __construct(){
         $this->helpers = ['form', 'url'];
+        $this->ionAuth = new \App\Libraries\IonAuth();
     }
 
     public function index()
     {
+        if(!$this->ionAuth->checkPermission('view_master'));
         $model = new ProductModel();
         $data = [
                 'pageTitle' => 'Products'

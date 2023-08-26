@@ -20,6 +20,19 @@
     <div class="card-body">
         <form>
             <div class="row">
+                <?php if(!isset($customer)): ?>
+                <div class="col-md-12">
+                    <div class="form-group" style="display:none" id="customer-dropdown">
+                        <label for="customer">Select Customer</label>
+                        <select name="customer" id="customer" class="form-control select2">
+                            <option value="0">Select Customer</option>
+                            <?php foreach($customers as $c): ?>
+                            <option value="<?= $c->id; ?>"><?= $c->customer_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="call-number">Call Number</label>

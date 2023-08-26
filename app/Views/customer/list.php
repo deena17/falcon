@@ -79,10 +79,8 @@ List Customer
                             <?= $c->contact_state; ?>-<?= $c->contact_pincode; ?>
                         </p>        
                         <span class="float-right">
-                            <?php if($ionAuth->checkPermission('edit_customer')): ?>
                             <a href="<?= url_to('customer.edit', $c->id); ?>" class="btn btn-info btn-sm"><i
-                                    class="fa fa-pencil-alt"></i> Edit</a>
-                            <?php endif; ?>        
+                                    class="fa fa-pencil-alt"></i> Edit</a>      
                             <a href="<?= url_to('customer.detail', $c->id); ?>" class="btn btn-secondary btn-sm"><i
                                     class="fa fa-eye"></i> View</a>
                             <a href="<?= url_to('customer.delete', $c->id); ?>" class="btn btn-danger btn-sm"><i

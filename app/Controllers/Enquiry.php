@@ -46,19 +46,11 @@ class Enquiry extends BaseController
 
     public function create($customer = null)
     {
-        if (! $this->ionAuth->loggedIn())
-		{
-			return redirect()->to('/auth/login');
-		}
-
-        if(!$this->ionAuth->checkPermission('add_enquiry')){
-            return view('auth/403', ['pageTitle' => 'Access Denined']);
-        }
-
         $this->data['page_title'] = 'New Enquiry';
         if(!empty($customer)){
             $this->data['customer'] = $this->customer->find($customer);
         }
+        $this->data['customers'] = $this->customer->findAll();
         $this->data['departments'] = $this->department->findAll();
         $this->data['status'] = $this->status->where('id < 5')->find();
         $this->data['products'] = $this->products->where(['display'=>'Y'])->find();
@@ -79,8 +71,8 @@ class Enquiry extends BaseController
             }
             else{
                 $data = [
-                    'customer_id' => isset($customer) ? $customer : null,
-                    'customer_type' => isset($customer) ? 1 : 0,
+                    'customer_id' => isset($customer) ? $customer : $this->request->getPost('customer'),
+                    'customer_type' => isset($customer) ? 1 : $this->request->getPost('is_existing'),
                     'enquiry_number' => $this->request->getPost('enquiry_number'),
                     'enquiry_date' => date('Y-m-d', strtotime($this->request->getPost('enquiry_date'))),
                     'department_id' => $this->request->getPost('department'),
@@ -122,7 +114,7 @@ class Enquiry extends BaseController
                         ];
                         $this->enquiry_product->insert($additional_data);
                     endfor;
-                    if(!empty($customer)){
+                    if(empty($customer)){
                         return redirect()->to('enquiry/list');
                     }
                     else{
@@ -133,10 +125,12 @@ class Enquiry extends BaseController
         }
     }
   
-    public function update($customer=null, $id=null)
+    public function update($id, $customer=null)
     {
         $this->data['page_title'] = 'Edit Enquiry';
+        if(!empty($customer))
         $this->data['customer'] = $this->customer->find($customer);
+        $this->data['customers'] = $this->customer->findAll();
         $this->data['departments'] = $this->department->findAll();
         $this->data['products'] = $this->products->findAll();
         $this->data['status'] = $this->status->findAll();
@@ -190,7 +184,7 @@ class Enquiry extends BaseController
             ];
             $this->enquiry_product->insert($additional_data);
         endfor;
-        if(!empty($customer)){
+        if(empty($customer)){
             return redirect()->to('enquiry/list');
         }
         else{
@@ -199,9 +193,10 @@ class Enquiry extends BaseController
     }
 
 
-    public function detail($customer=null, $id=null)
+    public function detail($id=null, $customer=null)
     {
         $this->data['page_title'] = 'Enquiry Detail';
+        if(!empty($customer))
         $this->data['customer'] = $this->customer->find($customer);
         $this->data['departments'] = $this->department->findAll();
         $this->data['products'] = $this->products->findAll();
@@ -215,11 +210,12 @@ class Enquiry extends BaseController
     }
 
 
-    public function delete($customer, $id = null)
+    public function delete($id, $customer=null)
     {
         $this->data['page_title'] = 'Delete Enquiry';
         $this->data['enquiry'] = $this->model->find($id);
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder.'/'.'delete', $this->data);
         }
@@ -227,7 +223,14 @@ class Enquiry extends BaseController
             $id = $this->request->getPost('id');
             $this->model->update($id, ['display'=>'N']);
             $this->enquiry_product->set('display', 'N')->where('enquiry_id', $id)->update();
-            return redirect()->to("customer/$customer/enquiry/list");
+            if($customer)
+                return redirect()->to("customer/$customer/enquiry/list");
+            return redirect()->to("enquiry/list");
         }
+    }
+
+    public function get_enquiry($id){
+        header('Content-Type application/json; charset=UTF-8');
+        return json_encode($this->model->find($id));
     }
 }

@@ -130,7 +130,7 @@ class Auth extends BaseController
 	 */
 	public function login()
 	{
-		$this->data['pageTitle'] = "Login";
+		$this->data['page_title'] = "Login";
 		$this->data['title'] = lang('Auth.login_heading');
 
 		// validate form input
@@ -1153,5 +1153,9 @@ class Auth extends BaseController
 		{
 			echo $viewHtml;
 		}
+	}
+
+	public function accessDenied(){
+		return view('auth/403', ['page_title' => 'Access Denied']);
 	}
 }

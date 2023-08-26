@@ -89,7 +89,7 @@
                                             <select id="engineer" class="select2" multiple="multiple" name="engineer[]"
                                                 style="width: 100%;" data-dropdown-css-class="select2-purple" value="">
                                                 <?php foreach ($engineer as $e) : ?>
-                                                <option value="<?= $e->id ?>"><?= $e->username; ?></option>
+                                                <option value="<?= $e->id ?>"><?= $e->first_name.' '.$e->last_name; ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>

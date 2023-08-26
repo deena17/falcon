@@ -51,7 +51,7 @@
                             </a>
                         </li>
                         <li class="list-group-item">
-                            <a href="<?= url_to('customer.invoice.list', $customer->id);; ?>">
+                            <a href="<?= url_to('customer.invoice.list', $customer->id); ?>">
                                 <i class="fa fa-file mr-2"></i>Invoice
                             </a>
                         </li>
@@ -61,7 +61,7 @@
                             </a>
                         </li>
                         <li class="list-group-item">
-                            <a href="<?= base_url(); ?>">
+                            <a href="<?= url_to('customer.payment.list', $customer->id); ?>">
                                 <i class="fa fa-file mr-2"></i>Payments
                             </a>
                         </li>

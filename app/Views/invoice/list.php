@@ -16,7 +16,7 @@
         <div class="card-header py-2">
             <h5 class="card-title pt-2"><strong><?= $page_title; ?></strong></h5>
             <div class="float-right">
-                <a href="<?= url_to('customer.invoice.add', $customer->id) ?>" class="btn btn-success"><i class="fa fa-plus"></i> New
+                <a href="<?= isset($customer) ? url_to('customer.invoice.add', $customer->id) : url_to('invoice.add') ?>" class="btn btn-success"><i class="fa fa-plus"></i> New
                     Invoice</a>
             </div>
         </div>
@@ -45,13 +45,13 @@
                             <td><?= $i->customer_name; ?></td>
                             <td><?= $i->grand_total; ?></td>
                             <td>
-                                <a href="<?= url_to('customer.invoice.edit', $customer->id, $i->id); ?>" class="btn btn-primary btn-sm">
+                                <a href="<?= isset($customer) ? url_to('customer.invoice.edit', $customer->id, $i->id) : url_to('invoice.edit', $i->id); ?>" class="btn btn-primary btn-sm">
                                     <i class="fa fa-pencil-alt"></i> Edit
                                 </a>
-                                <a href="<?= url_to('customer.invoice.detail', $customer->id, $i->id); ?>" class="btn btn-info btn-sm">
+                                <a href="<?= isset($customer) ? url_to('customer.invoice.detail', $customer->id, $i->id) : url_to('invoice.detail', $i->id); ?>" class="btn btn-info btn-sm">
                                     <i class="fa fa-eye"></i> View
                                 </a>
-                                <a href="<?= url_to('customer.invoice.delete', $customer->id, $i->id); ?>" class="btn btn-danger btn-sm">
+                                <a href="<?= isset($customer) ? url_to('customer.invoice.delete', $customer->id, $i->id): url_to('invoice.delete', $i->id); ?>" class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash"></i> Delete
                                 </a>
                             </td>

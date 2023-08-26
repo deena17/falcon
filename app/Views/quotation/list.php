@@ -16,7 +16,7 @@
         <div class="card-header py-2">
             <h5 class="card-title pt-2"><strong><?= $page_title; ?></strong></h5>
             <div class="float-right">
-                <a href="<?= url_to('customer.quotation.add', $customer->id) ?>" class="btn btn-success"><i class="fa fa-plus"></i> New
+                <a href="<?= isset($customer) ? url_to('customer.quotation.add', $customer->id) : url_to('quotation.add') ?>" class="btn btn-success"><i class="fa fa-plus"></i> New
                     Quotation</a>
             </div>
         </div>
@@ -36,22 +36,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <?php static $index = 1; foreach ($quotations as $i) : ?>
+                    <?php static $index = 1; foreach ($quotations as $q) : ?>
                         <tr>
                             <td><?= $index; ?></td>
-                            <td><?= $i->quotation_number; ?></td>
-                            <td><?= $i->quotation_date; ?></td>
-                            <td><?= $i->due_date; ?></td>
-                            <td><?= $i->customer_name; ?></td>
-                            <td><?= $i->grand_total; ?></td>
+                            <td><?= $q->quotation_number; ?></td>
+                            <td><?= $q->quotation_date; ?></td>
+                            <td><?= $q->due_date; ?></td>
+                            <td><?= $q->customer_name; ?></td>
+                            <td><?= $q->grand_total; ?></td>
                             <td>
-                                <a href="<?= url_to('customer.quotation.edit', $customer->id, $i->id); ?>" class="btn btn-primary btn-sm">
+                                <a href="<?= isset($customer) ? url_to('customer.quotation.edit', $customer->id, $q->id) : url_to('quotation.edit', $q->id) ; ?>" class="btn btn-primary btn-sm">
                                     <i class="fa fa-pencil-alt"></i> Edit
                                 </a>
-                                <a href="<?= url_to('customer.quotation.detail', $customer->id, $i->id); ?>" class="btn btn-info btn-sm">
+                                <a href="<?= isset($customer) ? url_to('customer.quotation.detail', $customer->id, $q->id) : url_to('quotation.detail', $q->id); ?>" class="btn btn-info btn-sm">
                                     <i class="fa fa-eye"></i> View
                                 </a>
-                                <a href="<?= url_to('customer.quotation.delete', $customer->id, $i->id); ?>" class="btn btn-danger btn-sm">
+                                <a href="<?= isset($customer) ? url_to('customer.quotation.delete', $customer->id, $q->id) : url_to('quotation.delete', $q->id); ?>" class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash"></i> Delete
                                 </a>
                             </td>

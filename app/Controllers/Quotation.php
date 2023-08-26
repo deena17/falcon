@@ -10,6 +10,7 @@ use App\Models\ProductItemModel;
 use App\Models\QuotationItemModel;
 use App\Models\CurrencyModel;
 use App\Models\InvoiceStatusModel;
+use App\Models\EnquiryModel;
 
 class Quotation extends BaseController
 {
@@ -28,20 +29,27 @@ class Quotation extends BaseController
         $this->quotation_items = new QuotationItemModel();
         $this->currency = new CurrencyModel();
         $this->invoice_status = new InvoiceStatusModel();
+        $this->enquiry = new EnquiryModel();
     }
 
-    public function index($customer)
+    public function index($customer=null)
     {
         $this->data['page_title'] = 'Quotation List';
         $this->data['quotations'] = $this->model->where(['display' => 'Y'])->find();
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'list', $this->data);
     }
 
     public function create($customer= null)
     {
         $this->data['page_title'] = 'New Quotation';
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
+        $this->data['enquiries'] = $this->enquiry->where([
+            'display'=> 'Y',
+            'status' => '2',
+            ])->find();
         $this->data['quotation_number'] = $this->model->generate_quotation_number();
         $this->data['products'] = $this->products->findAll();
         $this->data['currency'] = $this->currency->findAll();
@@ -125,10 +133,15 @@ class Quotation extends BaseController
     }
 
 
-    public function edit($customer=null, $id = null)
+    public function edit($id, $customer=null)
     {
         $this->data['page_title'] = 'Edit Quotation';
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
+        $this->data['enquiries'] = $this->enquiry->where([
+            'display'=> 'Y',
+            'status' => '2',
+            ])->find();
         $this->data['quotation_number'] = $this->model->generate_quotation_number();
         $this->data['products'] = $this->products->findAll();
         $this->data['product_models'] = $this->product_models->findAll();
@@ -199,10 +212,11 @@ class Quotation extends BaseController
         }
     }
 
-    public function detail($customer=null, $id = null)
+    public function detail($id, $customer=null)
     {
         $this->data['page_title'] = 'Quotation Detail';
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         $this->data['quotation_number'] = $this->model->generate_quotation_number();
         $this->data['products'] = $this->products->findAll();
         $this->data['product_models'] = $this->product_models->findAll();
@@ -215,11 +229,12 @@ class Quotation extends BaseController
         }
     }
 
-    public function delete($customer, $id = null)
+    public function delete($id, $customer=null)
     {
         $this->data['page_title'] = 'Delete Quotation';
         $this->data['quotation'] = $this->model->find($id);
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder.'/'.'delete', $this->data);
         }

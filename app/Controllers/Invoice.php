@@ -10,6 +10,7 @@ use App\Models\ProductItemModel;
 use App\Models\InvoiceItemModel;
 use App\Models\CurrencyModel;
 use App\Models\InvoiceStatusModel;
+use App\Models\EnquiryModel;
 
 class Invoice extends BaseController
 {
@@ -28,20 +29,28 @@ class Invoice extends BaseController
         $this->invoice_items = new InvoiceItemModel();
         $this->currency = new CurrencyModel();
         $this->invoice_status = new InvoiceStatusModel();
+        $this->enquiry = new EnquiryModel();
     }
 
     public function index($customer=null)
     {
         $this->data['page_title'] = 'Invoice List';
         $this->data['invoices'] = $this->model->where(['display'=> 'Y'])->find();
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         return view($this->viewsFolder . DIRECTORY_SEPARATOR . 'list', $this->data);
     }
 
     public function create($customer= null)
     {
         $this->data['page_title'] = 'New Invoice';
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
+        $this->data['enquiries'] = $this->enquiry->where([
+            'display'=> 'Y',
+            'status >' => '1',
+            'status <' => '4'
+            ])->find();
         $this->data['invoice_number'] = $this->model->generateInvoiceNumber();
         $this->data['products'] = $this->products->findAll();
         $this->data['currency'] = $this->currency->findAll();
@@ -125,10 +134,16 @@ class Invoice extends BaseController
     }
 
 
-    public function edit($customer=null, $id = null)
+    public function edit($id, $customer=null)
     {
         $this->data['page_title'] = 'Edit Invoice';
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
+        $this->data['enquiries'] = $this->enquiry->where([
+            'display'=> 'Y',
+            'status >' => '1',
+            'status <' => '4'
+            ])->find();
         $this->data['invoice_number'] = $this->model->generateInvoiceNumber();
         $this->data['products'] = $this->products->findAll();
         $this->data['product_models'] = $this->product_models->findAll();
@@ -199,10 +214,11 @@ class Invoice extends BaseController
         }
     }
 
-    public function detail($customer=null, $id = null)
+    public function detail($id, $customer=null, )
     {
         $this->data['page_title'] = 'Invoice Detail';
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         $this->data['invoice_number'] = $this->model->generateInvoiceNumber();
         $this->data['products'] = $this->products->findAll();
         $this->data['product_models'] = $this->product_models->findAll();
@@ -215,11 +231,12 @@ class Invoice extends BaseController
         }
     }
 
-    public function delete($customer, $id = null)
+    public function delete($id, $customer = null)
     {
         $this->data['page_title'] = 'Delete Invoice';
         $this->data['invoice'] = $this->model->find($id);
-        $this->data['customer'] = $this->customer->find($customer);
+        if(!empty($customer))
+            $this->data['customer'] = $this->customer->find($customer);
         if($_SERVER['REQUEST_METHOD'] == 'GET'){
             return view($this->viewsFolder.'/'.'delete', $this->data);
         }

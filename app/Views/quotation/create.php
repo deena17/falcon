@@ -16,12 +16,25 @@
         <form method="post">
         <div class="card-header py-2">
             <h5 class="card-title pt-2"><strong><?= $page_title; ?></strong></h5>
-            <a href="<?= isset($customer) ? url_to('customer.quotation.list', $customer->id) : url_to('invoice.list'); ?>" class="btn btn-info float-right">
+            <a href="<?= isset($customer) ? url_to('customer.quotation.list', $customer->id) : url_to('quotation.list'); ?>" class="btn btn-info float-right">
                 <i class="fa fa-arrow-left mr-2"></i>Back
             </a>
         </div>
         <div class="card-body">
             <div class="row">
+                <?php if(!isset($customer)): ?>
+                <div class="col-md-12">
+                `   <div class="form-group">
+                        <label for="enquiry">Select Enquiry</label>
+                        <select name="enquiry" id="enquiry" class="form-control select2">
+                            <option value="0">Select enquiry</option>
+                            <?php foreach($enquiries as $e): ?>
+                            <option value="<?= $e->id; ?>"><?= $e->enquiry_number .' - '.$e->customer_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="quotation_number">Quotation Number</label>
@@ -286,6 +299,42 @@
 <?= $this->section('scripts'); ?>
     <script>
     $('document').ready(function() {
+
+        $("#enquiry").change(function(){
+            var enquiry = parseInt($(this).val());
+            if(enquiry > 0){
+                $.ajax({
+                    type:'GET',
+                    url:`<?= base_url(); ?>/enquiry/${enquiry}/get-enquiry`,
+                    data:{'enquiry':enquiry},
+                    success:function(response){
+                        var options='';
+                        data = JSON.parse(response);
+                        $("#customer-name").val(data.customer_name).prop('readonly', 'readonly');
+                        $("#contact-number").val(data.contact_number).prop('readonly', 'readonly');
+                        $("#contact-landline").val(data.contact_landline).prop('readonly', 'readonly');
+                        $("#street").val(data.street).prop('readonly', 'readonly');
+                        $("#city").val(data.city).prop('readonly', 'readonly');
+                        $("#district").val(data.district).prop('readonly', 'readonly');
+                        $("#state").val(data.state).prop('readonly', 'readonly');
+                        $("#pincode").val(data.pincode).prop('readonly', 'readonly');
+                        $("#area").val(data.area).prop('readonly', 'readonly');
+                    }
+                }); 
+            }
+            else{
+                $("#customer-name").val('').prop('readonly', '');
+                $("#contact-number").val('').prop('readonly', '');
+                $("#contact-landline").val('').prop('readonly', '');
+                $("#street").val('').prop('readonly', '');
+                $("#city").val('').prop('readonly', '');
+                $("#district").val('').prop('readonly', '');
+                $("#state").val('').prop('readonly', '');
+                $("#pincode").val('').prop('readonly', '');
+                $("#area").val('').prop('readonly', '');
+            }
+        });
+
         $('#add-new-button').click(function(e){
             e.preventDefault();
             index = parseInt($("#index").val());
